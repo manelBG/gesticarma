@@ -1,0 +1,21 @@
+/* Pas de commentaire au tout début ! */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Classe personnalisée (optionnelle) */
+.pacifico-regular {
+  font-family: "Pacifico", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Autres styles */
+.bg-custom {
+  background-image: url('/images/fond1.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+}
