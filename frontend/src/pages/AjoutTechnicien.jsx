@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import {
-  FaUser, FaEnvelope, FaPhoneAlt, FaLock
-} from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaPhoneAlt, FaLock } from 'react-icons/fa';
 
-const AjoutEmploye = () => {
+const AjoutTechnicien = () => {
   const [formData, setFormData] = useState({
     nom: '',
     prenom: '',
     email: '',
     telephone: '',
     password: '',
-    genre: ''
+    genre: '',
   });
 
   const [message, setMessage] = useState('');
@@ -75,9 +73,9 @@ const AjoutEmploye = () => {
 
     if (Object.keys(formErrors).length === 0) {
       try {
-        const res = await axios.post('/api/employes/add', formData);
+        const res = await axios.post('/api/techniciens/add', formData);
         setMessage(res.data.message);
-        setTimeout(() => navigate('/employes'), 2000);
+        setTimeout(() => navigate('/techniciens'), 2000);
       } catch (err) {
         setMessage(err.response?.data?.message || "Erreur lors de l'ajout.");
       }
@@ -86,7 +84,7 @@ const AjoutEmploye = () => {
 
   return (
     <div className="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-xl shadow-lg">
-      <h2 className="text-3xl font-pacifico text-center mb-6 text-gray-600">Ajouter un Employé</h2>
+      <h2 className="text-3xl font-pacifico text-center mb-6 text-gray-600">Ajouter un Technicien</h2>
 
       {message && <div className="mb-4 text-center text-green-600 font-semibold">{message}</div>}
 
@@ -149,83 +147,55 @@ const AjoutEmploye = () => {
         </div>
 
         {/* Mot de passe */}
-        <div className="relative">
-          <input
-            type="password"
-            name="password"
-            placeholder="Mot de passe"
-            value={formData.password}
-            onChange={handleChange}
-            className={`w-full border rounded-md p-3 pl-10 ${
-              passwordStrength === 'strong'
-                ? 'bg-green-100'
-                : passwordStrength === 'medium'
-                ? 'bg-orange-100'
-                : passwordStrength === 'weak'
-                ? 'bg-red-100'
-                : 'bg-white'
-            }`}
-          />
-          <FaLock className="absolute left-3 top-3 text-gray-400" />
-          {errors.password && <div className="text-red-600 text-sm">{errors.password}</div>}
-          {passwordStrength && (
-            <div
-              className={`text-sm mt-1 ${
-                passwordStrength === 'strong'
-                  ? 'text-green-600'
-                  : passwordStrength === 'medium'
-                  ? 'text-orange-600'
-                  : 'text-red-600'
-              }`}
-            >
-              {passwordStrength === 'strong'
-                ? 'Mot de passe fort'
-                : passwordStrength === 'medium'
-                ? 'Mot de passe moyen'
-                : 'Mot de passe faible'}
-            </div>
-          )}
-        </div>
+                <div className="relative">
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Mot de passe"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={`w-full border rounded-md p-3 pl-10 ${
+                      passwordStrength === 'strong'
+                        ? 'bg-green-100'
+                        : passwordStrength === 'medium'
+                        ? 'bg-orange-100'
+                        : passwordStrength === 'weak'
+                        ? 'bg-red-100'
+                        : 'bg-white'
+                    }`}
+                  />
+                  <FaLock className="absolute left-3 top-3 text-gray-400" />
+                  {errors.password && <div className="text-red-600 text-sm">{errors.password}</div>}
+                  {passwordStrength && (
+                    <div
+                      className={`text-sm mt-1 ${
+                        passwordStrength === 'strong'
+                          ? 'text-green-600'
+                          : passwordStrength === 'medium'
+                          ? 'text-orange-600'
+                          : 'text-red-600'
+                      }`}
+                    >
+                      {passwordStrength === 'strong'
+                        ? 'Mot de passe fort'
+                        : passwordStrength === 'medium'
+                        ? 'Mot de passe moyen'
+                        : 'Mot de passe faible'}
+                    </div>
+                  )}
+                </div>
 
-        {/* Genre */}
-        <div>
-          <label className="block mb-2 text-gray-700 font-semibold">Genre :</label>
-          <div className="flex items-center gap-6">
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="genre"
-                value="Homme"
-                checked={formData.genre === 'Homme'}
-                onChange={handleChange}
-                className="form-radio h-4 w-4 text-gray-600"
-              />
-              Homme
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="genre"
-                value="Femme"
-                checked={formData.genre === 'Femme'}
-                onChange={handleChange}
-                className="form-radio h-4 w-4 text-gray-600"
-              />
-              Femme
-            </label>
-          </div>
-          {errors.genre && <div className="text-red-600 text-sm mt-1">{errors.genre}</div>}
-        </div>
-
+        
+        {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition duration-200"
+          className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-md"
         >
-          Enregistrer
+          Ajouter le Technicien
         </button>
       </form>
     </div>
   );
 };
 
-export default AjoutEmploye;
+export default AjoutTechnicien;

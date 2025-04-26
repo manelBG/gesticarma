@@ -20,6 +20,10 @@ import EmployeeAccueil from './pages/EmployeeAccueil';
 import TechAccueil from './pages/TechAccueil';
 import Notifications from './pages/Notifications';
 import AjoutEmploye from './pages/AjoutEmploye';
+import AjoutTechnicien from './pages/AjoutTechnicien'; 
+import AjoutVehicule from './pages/AjoutVehicule'; // Le formulaire d'ajout
+// Le formulaire d'ajout
+
 
 function App() {
   return (
@@ -48,6 +52,9 @@ function App() {
         <Route path="logout" element={<ProtectRoute><Logout /></ProtectRoute>} />
         <Route path="notifications" element={<ProtectRoute><Notifications /></ProtectRoute>} />
         <Route path="/employes/ajouter" element={<AjoutEmploye />} />
+        <Route path="/techniciens/ajouter" element={<AjoutTechnicien />} />
+        <Route path="/vehicules/ajouter" element={<AjoutVehicule />} />
+
 
       </Route>
     </Routes>

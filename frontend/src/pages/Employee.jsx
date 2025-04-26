@@ -61,20 +61,21 @@ const Employes = () => {
       <h1 className="text-4xl font-pacifico text-black mb-6 text-center">
         Liste des Employés
       </h1>
-
       <div className="flex justify-between items-center mb-6">
-        <div className="relative w-full max-w-sm">
-          <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 font-semibold">
-            Search:
-          </span>
-          <input
-            type="text"
-            className="border border-gray-300 rounded-md py-2 pl-3 pr-20 w-full focus:outline-none focus:ring-2 focus:ring-orange-300 shadow-sm"
-            placeholder="Rechercher..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+    <div className="relative w-full max-w-sm">
+      <input
+        type="text"
+        className="border border-gray-300 rounded-md py-2 pl-6 pr-4 w-full focus:outline-none focus:ring-2 focus:ring-orange-300 shadow-sm text-center"
+        placeholder="Rechercher..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <span className="absolute inset-y-0 left-3 flex items-center text-gray-500 font-semibold">
+        Search:
+      </span>
+    </div>
+        
+
         <div className="flex justify-end mb-4">
           <a
             href="/employes/ajouter"

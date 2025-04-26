@@ -1,0 +1,80 @@
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f4f8;
+}
+
+.mission-form {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 30px;
+  width: 100%;
+  max-width: 800px; /* Formulaire centré avec une largeur maximale */
+  min-width: 350px; /* Largeur minimale pour petits écrans */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* Assure une meilleure gestion de la largeur et du padding */
+}
+
+.mission-form h2 {
+  font-family: 'Pacifico', cursive;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  color: #34495e;
+  margin-bottom: 5px;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.form-group input[type="radio"] {
+  width: auto;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 48%;
+}
+
+.form-actions button:hover {
+  background-color: #2980b9;
+}
+
+.form-actions button[type="button"] {
+  background-color: #e74c3c;
+}
+
+.form-actions button[type="button"]:hover {
+  background-color: #c0392b;
+}
