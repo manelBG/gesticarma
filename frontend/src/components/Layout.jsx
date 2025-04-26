@@ -56,7 +56,7 @@ export default function Layout() {
   const location = useLocation();
   const path = location.pathname.split("/").filter(Boolean);
   const currentPage = path.length ? path[path.length - 1] : "Accueil";
-
+console.log(user, "user");
   useEffect(() => {
     const fetchUser = async () => {
       try {

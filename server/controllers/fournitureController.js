@@ -1,73 +1,68 @@
-import Fourniture from '../models/Fourniture.js';
+import Fourniture from "../models/Fourniture.js";
 
-import mongoose from 'mongoose';
-
-export const ajouterFourniture = async (req, res) => {
+export const createFourniture = async (req, res) => {
   try {
-    const {
-      nom,
-      marque,
-      quantite,
-      dateAjout,
-      typeFourniture,
-      reference,
-      description,
-      dimension,
-      typeFiltre,
-      typeLubrifiant,
-      fournisseur,
-      technicien
-    } = req.body;
-
-    if (!['PieceDetachee', 'Pneumatique', 'Filtre', 'LubrifiantFluide'].includes(typeFourniture)) {
-      return res.status(400).json({ message: 'Type de fourniture invalide.' });
-    }
-
-    const nouvelleFourniture = new Fourniture({
-      nom,
-      marque: new mongoose.Types.ObjectId(marque),
-      quantite,
-      dateAjout,
-      typeFourniture,
-      fournisseur: new mongoose.Types.ObjectId(fournisseur),
-      technicien: new mongoose.Types.ObjectId(technicien)
-    });
-
-    // Champs conditionnels
-    if (typeFourniture === 'PieceDetachee') {
-      if (!reference || !description) {
-        return res.status(400).json({ message: 'Référence et description requises pour une pièce détachée.' });
-      }
-      nouvelleFourniture.reference = reference;
-      nouvelleFourniture.description = description;
-    } else if (typeFourniture === 'Pneumatique') {
-      if (!dimension) {
-        return res.status(400).json({ message: 'Dimension requise pour un pneumatique.' });
-      }
-      nouvelleFourniture.dimension = dimension;
-    } else if (typeFourniture === 'Filtre') {
-      if (!typeFiltre || !description) {
-        return res.status(400).json({ message: 'Type de filtre et description requis pour un filtre.' });
-      }
-      nouvelleFourniture.typeFiltre = typeFiltre;
-      nouvelleFourniture.description = description;
-    } else if (typeFourniture === 'LubrifiantFluide') {
-      if (!typeLubrifiant) {
-        return res.status(400).json({ message: 'Type de lubrifiant requis.' });
-      }
-      nouvelleFourniture.typeLubrifiant = typeLubrifiant;
-    }
-
-    console.log("Fourniture à sauvegarder :", nouvelleFourniture);
-
-    await nouvelleFourniture.save();
-
-    res.status(201).json({
-      message: 'Fourniture ajoutée avec succès.',
-      fourniture: nouvelleFourniture
-    });
+    const newFourniture = new Fourniture(req.body);
+    await newFourniture.save();
+    res.status(201).json(newFourniture);
   } catch (error) {
-    console.error("Erreur lors de l'ajout de la fourniture :", error);
-    res.status(500).json({ message: "Erreur serveur lors de l'ajout de la fourniture." });
+    console.error(error); // <-- ajoute ça pour voir dans la console
+    res
+      .status(500)
+      .json({ message: "Erreur serveur lors de l'ajout de la fourniture." });
+  }
+};
+
+export const getAllFournitures = async (req, res) => {
+  try {
+    const fournitures = await Fourniture.find().populate({
+      path: "technicien",
+      select: "name", // sélectionner uniquement nom et prénom du technicien
+    });
+
+    res.status(200).json(fournitures);
+  } catch (err) {
+    res.status(500).json({
+      message: "Erreur lors de la récupération des fournitures",
+      error: err.message,
+    });
+  }
+};
+
+
+export const updateFournitures = async (req, res) => {
+  try {
+    const fournitureId = req.query.fournitureid; // ⬅️ récupérer l'id depuis la query string
+
+    if (!fournitureId) {
+      return res
+        .status(400)
+        .json({ message: "ID du véhicule manquant dans les query params" });
+    }
+
+    const updated = await Fourniture.findByIdAndUpdate(fournitureId, req.body, {
+      new: true,
+    });
+
+    if (!updated) {
+      return res.status(404).json({ message: "Véhicule non trouvé" });
+    }
+
+    res.status(200).json(updated);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la mise à jour", error });
+  }
+};
+
+export const deleteFourniture = async (req, res) => {
+  const fournitureId = req.query.fournitureid; // Retrieve the ID from the query string
+console.log(fournitureId, "fournitureIdsss");
+  try {
+    const deleted = await Fourniture.findByIdAndDelete(fournitureId); // Use the ID from the query string
+    if (!deleted)
+      return res.status(404).json({ message: "Véhicule non trouvé" });
+    res.status(200).json({ message: "Véhicule supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la suppression", error });
   }
 };

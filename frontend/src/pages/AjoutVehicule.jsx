@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { createVehicule } from "../redux/vehiculeSlice/vehiculeSlice";
+import { useDispatch } from "react-redux";
 
 const AjoutVehicule = () => {
   const [vehicule, setVehicule] = useState({
-    marque: '',
-    modele: '',
-    immatriculation: '',
-    statut: '', // Valeur vide par défaut
-    carburant: '', // Valeur vide par défaut
-    dateMiseEnCirculation: '',
+    marque: "",
+    modele: "",
+    immatriculation: "",
+    statut: "", // Valeur vide par défaut
+    carburant: "", // Valeur vide par défaut
+    dateMiseEnCirculation: "",
   });
+  console.log(vehicule, "vehicule");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,17 +26,23 @@ const AjoutVehicule = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const resultAction = await dispatch(createVehicule(vehicule));
+    console.log(resultAction, "resultAction"); // Log the result action for debugging
 
-    try {
-      await axios.post('/api/vehicules', vehicule);
-      navigate('/vehicules'); // Redirige vers la page des véhicules après l'ajout
-    } catch (err) {
-      setError('Une erreur est survenue. Veuillez réessayer plus tard.');
-      console.error('Erreur lors de l\'ajout du véhicule :', err);
+    if (createVehicule.fulfilled.match(resultAction)) {
+      navigate("/interventions/interne");
+    } else {
+      setError(resultAction.payload || "Erreur lors de l'ajout du véhicule.");
     }
-  };
+  } catch (err) {
+    setError("Une erreur est survenue. Veuillez réessayer plus tard.");
+  }
+};
+
+
 
   return (
     <div className="w-full max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-lg">
@@ -44,7 +54,10 @@ const AjoutVehicule = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="marque" className="block text-gray-700 font-semibold mb-2">
+          <label
+            htmlFor="marque"
+            className="block text-gray-700 font-semibold mb-2"
+          >
             Marque
           </label>
           <input
@@ -59,7 +72,10 @@ const AjoutVehicule = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="modele" className="block text-gray-700 font-semibold mb-2">
+          <label
+            htmlFor="modele"
+            className="block text-gray-700 font-semibold mb-2"
+          >
             Modèle
           </label>
           <input
@@ -74,7 +90,10 @@ const AjoutVehicule = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="immatriculation" className="block text-gray-700 font-semibold mb-2">
+          <label
+            htmlFor="immatriculation"
+            className="block text-gray-700 font-semibold mb-2"
+          >
             Immatriculation
           </label>
           <input
@@ -89,7 +108,10 @@ const AjoutVehicule = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="statut" className="block text-gray-700 font-semibold mb-2">
+          <label
+            htmlFor="statut"
+            className="block text-gray-700 font-semibold mb-2"
+          >
             Statut
           </label>
           <select
@@ -99,7 +121,8 @@ const AjoutVehicule = () => {
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-md"
           >
-            <option value="">Sélectionner un statut</option> {/* Option vide par défaut */}
+            <option value="">Sélectionner un statut</option>{" "}
+            {/* Option vide par défaut */}
             <option value="Disponible">Disponible</option>
             <option value="En mission">En mission</option>
             <option value="En panne">En panne</option>
@@ -108,7 +131,10 @@ const AjoutVehicule = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="carburant" className="block text-gray-700 font-semibold mb-2">
+          <label
+            htmlFor="carburant"
+            className="block text-gray-700 font-semibold mb-2"
+          >
             Type de carburant
           </label>
           <select
@@ -119,7 +145,8 @@ const AjoutVehicule = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded-md"
             required
           >
-            <option value="">Sélectionner un carburant</option> {/* Option vide par défaut */}
+            <option value="">Sélectionner un carburant</option>{" "}
+            {/* Option vide par défaut */}
             <option value="Essence">Essence</option>
             <option value="Diesel">Diesel</option>
             <option value="Électrique">Électrique</option>
@@ -128,7 +155,10 @@ const AjoutVehicule = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="dateMiseEnCirculation" className="block text-gray-700 font-semibold mb-2">
+          <label
+            htmlFor="dateMiseEnCirculation"
+            className="block text-gray-700 font-semibold mb-2"
+          >
             Date de mise en circulation
           </label>
           <input

@@ -11,10 +11,10 @@ import {
 const router = express.Router();
 
 // Routes
-router.post("/", createVehicule);
-router.get("/", getVehicules);
+router.post("/createVeicule", createVehicule);
+router.get("/getAllVeh", getVehicules);
 router.get("/:id", getVehiculeById);
-router.put("/:id", updateVehicule);
-router.delete("/:id", deleteVehicule);
+router.put("/updateVeh", updateVehicule);
+router.delete("/deleteVeh", deleteVehicule);
 
 export default router;

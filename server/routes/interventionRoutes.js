@@ -14,15 +14,15 @@ const router = express.Router();
 
 // Routes pour l'intervention interne
 // Admin ou technicien
-router.get('/interventions', verifyToken(['admin', 'technicien']), getAllInterventions);
+router.get('/allInterventions', getAllInterventions);
 
 // Créer une intervention interne
-router.post('/interventions', verifyToken(['admin', 'technicien']), createIntervention);
+router.post('/createInter', createIntervention);
 
 router.get('/:id', auth, getInterventionById);  // Récupère une intervention interne par ID
 
-router.put('/:id', auth, updateIntervention);  // Met à jour une intervention interne
+router.put("/updateIntervention", updateIntervention);  // Met à jour une intervention interne
 
-router.delete('/:id', auth, deleteIntervention);  // Supprime une intervention interne
+router.delete("/deleteIntervention", deleteIntervention);  // Supprime une intervention interne
 
 export default router;

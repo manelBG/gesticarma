@@ -1,18 +1,19 @@
-import { sendNotification } from '../utils/sendNotification.js';
-import User from '../models/User.js';
+import { sendNotification } from "../utils/sendNotification.js";
+import User from "../models/User.js";
+import Intervention from "../models/Intervention.js";
 
 export const createIntervention = async (req, res) => {
   try {
-    const { 
-      type, 
-      description, 
-      dateIntervention, 
-      cout, 
-      statut, 
-      kilometrage, 
-      duree, 
-      technicien, 
-      vehicule 
+    const {
+      type,
+      description,
+      dateIntervention,
+      cout,
+      statut,
+      kilometrage,
+      duree,
+      technicien,
+      vehicule,
     } = req.body;
 
     const intervention = new Intervention({
@@ -24,74 +25,101 @@ export const createIntervention = async (req, res) => {
       kilometrage,
       duree,
       technicien,
-      vehicule
+      vehicule,
     });
 
     const savedIntervention = await intervention.save();
 
     // ✅ Notification au directeur
-    const directeur = await User.findOne({ role: 'directeur' });
+    const directeur = await User.findOne({ role: "directeur" });
     if (directeur) {
       await sendNotification(
         directeur._id,
-        'intervention',
+        "intervention",
         `Une intervention a été créée pour le véhicule ${vehicule} par le technicien ${technicien}.`
       );
     }
 
     res.status(201).json(savedIntervention);
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la création de l\'intervention', error });
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la création de l'intervention", error });
   }
 };
 
+// Supprimer un véhicule
 export const deleteIntervention = async (req, res) => {
+  const interventionId = req.query.interventionid; // Retrieve the ID from the query string
+console.log(interventionId, "interventionIdsss");
   try {
-    const intervention = await Intervention.findByIdAndDelete(req.params.id);  // Supprimer l'intervention par son ID
-
-    if (!intervention) {
-      return res.status(404).json({ message: 'Intervention non trouvée' });
-    }
-
-    res.status(200).json({ message: 'Intervention supprimée avec succès' });
-  } catch (err) {
-    res.status(500).json({ message: 'Erreur lors de la suppression de l\'intervention', error: err.message });
+    const deleted = await Intervention.findByIdAndDelete(interventionId); // Use the ID from the query string
+    if (!deleted)
+      return res.status(404).json({ message: "Véhicule non trouvé" });
+    res.status(200).json({ message: "Véhicule supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la suppression", error });
   }
 };
 
 export const getAllInterventions = async (req, res) => {
   try {
-    const interventions = await Intervention.find();  // Trouver toutes les interventions dans la base de données
-    res.status(200).json(interventions);  // Retourner les interventions trouvées
+    const interventions = await Intervention.find()
+      .populate({
+        path: "vehicule",
+        select: "marque modele immatriculation", // sélectionner uniquement marque, modèle et immatriculation
+      })
+      .populate({
+        path: "technicien",
+        select: "name prenom", // sélectionner uniquement nom et prénom du technicien
+      });
+
+    res.status(200).json(interventions);
   } catch (err) {
-    res.status(500).json({ message: 'Erreur lors de la récupération des interventions', error: err.message });
+    res.status(500).json({
+      message: "Erreur lors de la récupération des interventions",
+      error: err.message,
+    });
   }
 };
 export const getInterventionById = async (req, res) => {
   try {
-    const intervention = await Intervention.findById(req.params.id);  // Utilise l'ID dans la route pour trouver l'intervention
+    const intervention = await Intervention.findById(req.params.id); // Utilise l'ID dans la route pour trouver l'intervention
     if (!intervention) {
-      return res.status(404).json({ message: 'Intervention non trouvée' });
+      return res.status(404).json({ message: "Intervention non trouvée" });
     }
-    res.status(200).json(intervention);  // Retourne l'intervention trouvée
+    res.status(200).json(intervention); // Retourne l'intervention trouvée
   } catch (err) {
-    res.status(500).json({ message: 'Erreur lors de la récupération de l\'intervention', error: err.message });
+    res
+      .status(500)
+      .json({
+        message: "Erreur lors de la récupération de l'intervention",
+        error: err.message,
+      });
   }
 };
+
+
 export const updateIntervention = async (req, res) => {
   try {
-    const updatedIntervention = await Intervention.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    ); // Mise à jour de l'intervention par son ID
+    const interventionId = req.query.interventionid; // ⬅️ récupérer l'id depuis la query string
 
-    if (!updatedIntervention) {
-      return res.status(404).json({ message: 'Intervention non trouvée' });
+    if (!interventionId) {
+      return res
+        .status(400)
+        .json({ message: "ID du véhicule manquant dans les query params" });
     }
 
-    res.status(200).json(updatedIntervention); // Retourne l'intervention mise à jour
-  } catch (err) {
-    res.status(500).json({ message: 'Erreur lors de la mise à jour de l\'intervention', error: err.message });
+    const updated = await Intervention.findByIdAndUpdate(interventionId, req.body, {
+      new: true,
+    });
+
+    if (!updated) {
+      return res.status(404).json({ message: "Véhicule non trouvé" });
+    }
+
+    res.status(200).json(updated);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la mise à jour", error });
   }
 };
