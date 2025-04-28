@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import mongoose from "mongoose"; 
-import bcrypt from "bcrypt";
 import User from "./models/User.js";
 import connectToDatabase from "./db/db.js";
 
@@ -12,22 +11,23 @@ const userRegister = async () => {
     await connectToDatabase();
 
     // Vérifier si l'utilisateur existe déjà
-    const existingUser = await User.findOne({ email: "directeur@gmail.com" });
+    const existingUser = await User.findOne({ email: "hassenmrabet@gmail.com" });
 
     if (existingUser) {
       console.log("L'utilisateur avec cet email existe déjà !");
       return;
     }
 
-    // Hacher le mot de passe
-    const hashPassword = await bcrypt.hash("directeur", 10);
-
-    // Créer un nouvel utilisateur avec le mot de passe haché
+    // Créer un nouvel utilisateur SANS hacher le mot de passe
+    // Le hook pre-save se chargera de le hacher
     const newUser = new User({
-      name: "directeur",
-      email: "directeur@gmail.com",
-      password: hashPassword,
+      nom: "Mrabet",
+      prenom: "Hassen",
+      email: "hassenmrabet@gmail.com",
+      password: "hassen123",  // Mot de passe en clair, sera haché par le hook pre-save
       role: "admin",
+      telephone: "20129410",
+      genre: "male"
     });
 
     // Sauvegarder l'utilisateur dans la base de données

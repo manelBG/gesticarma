@@ -279,20 +279,22 @@ const Vehicules = () => {
                         ).toLocaleDateString()
                       : "Non spécifiée"}
                   </td>
-                  <td className="px-4 py-3 border-b flex gap-2">
-                    <button
-                      className="bg-yellow-400 hover:bg-yellow-500 text-white py-1 px-3 rounded-full"
-                      onClick={() => handleEditClick(vehicule)}
-                    >
-                      Modifier
-                    </button>
+                  <td className="px-4 py-3 border-b">
+                    <div className="flex items-center gap-2 whitespace-nowrap"> 
+                      <button
+                       className="bg-yellow-400 hover:bg-yellow-500 text-white py-1 px-3 rounded-full"
+                       onClick={() => handleEditClick(vehicule)}
+                      >
+                        Modifier
+                      </button>
 
-                    <button
+                      <button
                       className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
                       onClick={() => handleDelete(vehicule._id)}
-                    >
+                       >
                       Supprimer
-                    </button>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

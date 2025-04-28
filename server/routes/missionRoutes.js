@@ -1,6 +1,6 @@
 import express from 'express';
 import { createMission, getAllMissions,   getMissionsByEmployee, deleteMission, updateMission} from '../controllers/missionController.js';  // Importer les fonctions du contrôleur
-import { verifyToken } from '../middlewares/authMiddleware.js'; // ✅ Import correct de verifyToken
+import { verifyToken } from '../middlewares/authMiddleware.js'; 
 
 
 

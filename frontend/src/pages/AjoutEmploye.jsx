@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import {
   FaUser, FaEnvelope, FaPhoneAlt, FaLock
 } from 'react-icons/fa';
+import { createEmployee } from "../redux/employeeSlice/employeeSlice";
+import { useDispatch } from "react-redux";
 
 const AjoutEmploye = () => {
   const [formData, setFormData] = useState({
@@ -18,8 +20,9 @@ const AjoutEmploye = () => {
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState({});
   const [passwordStrength, setPasswordStrength] = useState('');
-  const navigate = useNavigate();
-
+   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -72,17 +75,25 @@ const AjoutEmploye = () => {
     e.preventDefault();
     const formErrors = validateForm();
     setErrors(formErrors);
-
+  
     if (Object.keys(formErrors).length === 0) {
       try {
-        const res = await axios.post('/api/employes/add', formData);
-        setMessage(res.data.message);
-        setTimeout(() => navigate('/employes'), 2000);
+        // Dispatch de l'action pour créer un employé
+        const resultAction = await dispatch(createEmployee(formData));
+        console.log(resultAction, "resultAction"); // Log du résultat pour le debug
+  
+        // Vérification si l'action a réussi
+        if (createEmployee.fulfilled.match(resultAction)) {
+          navigate("/employes"); // Redirection vers la liste des employés
+        } else {
+          setMessage(resultAction.payload || "Erreur lors de l'ajout de l'employé.");
+        }
       } catch (err) {
-        setMessage(err.response?.data?.message || "Erreur lors de l'ajout.");
+        setMessage("Une erreur est survenue. Veuillez réessayer plus tard.");
       }
     }
   };
+  
 
   return (
     <div className="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-xl shadow-lg">

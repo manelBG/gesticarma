@@ -1,21 +1,22 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-import bcrypt from 'bcrypt';
 
 const login = async (req, res) => {
   try {
-    console.log("💡 Requête reçue :", req.body); // 👈 log 1
+    console.log("💡 Requête reçue :", req.body);
 
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select("+password"); // 👈 log 2
-    console.log("🔍 Utilisateur trouvé :", user);
+    // Trouver l'utilisateur par email et inclure explicitement le champ password
+    const user = await User.findOne({ email }).select('+password');
+    console.log("🔍 Utilisateur trouvé :", user ? "Oui" : "Non");
 
     if (!user) {
       return res.status(404).json({ success: false, error: "User Not Found" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password); // 👈 log 3
+    // Utiliser la méthode comparePassword du modèle User
+    const isMatch = await user.comparePassword(password);
     console.log("🔐 Mot de passe valide :", isMatch);
 
     if (!isMatch) {
@@ -29,32 +30,25 @@ const login = async (req, res) => {
       { expiresIn: "20d" }
     );
 
-    // Log après la génération du token, avant de renvoyer la réponse
-    console.log("Clé JWT utilisée pour SIGNER :", process.env.JWT_KEY);
-    console.log("Token généré :", token);
-
     // Envoi de la réponse avec le token et les données utilisateur
     return res.status(200).json({
       success: true,
       token,
       user: {
         _id: user._id,
-        name: user.name,
+        nom: user.nom,
         prenom: user.prenom,
         email: user.email,
         role: user.role,
         genre: user.genre,
-        tlf: user.tlf,
-
+        telephone: user.telephone
       },
     });
 
   } catch (error) {
-    console.error("🔥 Erreur dans login:", error); // 👈 log 4
+    console.error("🔥 Erreur dans login:", error);
     return res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };
 
 export { login };
-
-

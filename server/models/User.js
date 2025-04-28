@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
-  name: {
+  nom:{
     type: String,
     required: [true, "Le nom est obligatoire"],
     trim: true
@@ -31,8 +31,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["directeur", "employee", "technicien"],
-    default: "employee",
+    enum: ["admin","employee","technicien"],
     required: true
   },
   genre: {
@@ -40,7 +39,7 @@ const userSchema = new mongoose.Schema({
     enum: ['male', 'female'],
     required: false, // ou true si tu veux forcer le choix
   },
-  tlf: {
+  telephone:{
     type: String,
     required: [true, "Le numéro de téléphone est obligatoire"],
     trim: true,

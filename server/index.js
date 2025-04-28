@@ -13,9 +13,10 @@ import dashboardRoutes from "./routes/dashboardRoutes.js";
 import notificationRoutes from './routes/notificationRoutes.js';
 import marqueRoutes from './routes/marqueRoutes.js';
 import prestataireRoutes from './routes/prestataireRoutes.js';
-import statsRoute from './routes/statsRoute.js'; // ✅ correct
+import statsRoute from './routes/statsRoute.js'; 
 import userRoutes from './routes/userRoutes.js';
 import employeRoutes from './routes/employeRoutes.js';
+import technicienRoutes from './routes/technicienRoutes.js';
 
 
 
@@ -91,7 +92,9 @@ connectToDatabase()
 
     app.use('/api/users', userRoutes);
     
-    app.use('/api/employes', employeRoutes);
+    app.use('/api/employees', employeRoutes);
+
+    app.use('/api/technicien', technicienRoutes); 
 
 
     setInterval(async () => {

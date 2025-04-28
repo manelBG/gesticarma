@@ -16,7 +16,7 @@ const AjoutVehicule = () => {
   console.log(vehicule, "vehicule");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
