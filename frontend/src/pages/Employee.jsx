@@ -99,10 +99,10 @@ const Employes = () => {
   const filteredEmployes = listEmployee.filter((employe) => {
     const fullName = `${employe.nom} ${employe.prenom}`.toLowerCase();
     const reverseFullName = `${employe.prenom} ${employe.nom}`.toLowerCase();
-    const search = searchTerm.toLowerCase();
+    const search = searchTerm?.toLowerCase();
     return (
-      employe.nom.toLowerCase().includes(search) ||
-      employe.prenom.toLowerCase().includes(search) ||
+      employe.nom?.toLowerCase().includes(search) ||
+      employe.prenom?.toLowerCase().includes(search) ||
       fullName.includes(search) ||
       reverseFullName.includes(search)
     );

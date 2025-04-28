@@ -14,12 +14,12 @@ export const addTechnicien = async (req, res) => {
 
     // Créer un nouvel utilisateur (rôle : technicien ou employé selon le rôle fourni)
     const newUser = new User({
-      name: nom,
+      nom: nom,
       prenom,
       email,
-      tlf: telephone,
+      telephone: telephone,
       password, // Assure-toi que ton modèle hash le mot de passe
-      role: 'technicien ',
+      role: "technicien ",
       genre,
     });
 

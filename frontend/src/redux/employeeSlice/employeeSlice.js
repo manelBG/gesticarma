@@ -4,16 +4,16 @@ import axios from "axios";
 
 // 📌 Créer un employé (POST)
 export const createEmployee = createAsyncThunk(
-  "employees/createEmployee",
-  async (employeeData, { rejectWithValue }) => {
+  "employees/create",
+  async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/employees/createEmployee",
-        employeeData
+        "http://localhost:5000/api/employees/add",
+        formData
       );
-      return response.data;
+      return response.data; // OK
     } catch (err) {
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(err.response.data.message || "Erreur serveur");
     }
   }
 );
@@ -23,7 +23,9 @@ export const getEmployees = createAsyncThunk(
   "employees/getEmployees",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/employees/getAllEmployees");
+      const response = await axios.get(
+        "http://localhost:5000/api/employees/getAllEmployees"
+      );
       return response.data;
     } catch (err) {
       if (err.response && err.response.data) {
@@ -41,9 +43,10 @@ export const updateEmployee = createAsyncThunk(
   async ({ employeeId, updatedData }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/employees/updateEmployee?employeeid=${employeeId}`,
+        `http://localhost:5000/api/employees/updateEmployee/${employeeId}`,
         updatedData
       );
+
       return response.data;
     } catch (err) {
       if (err.response && err.response.data) {
@@ -61,7 +64,7 @@ export const deleteEmployee = createAsyncThunk(
   async (employeeId, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/employees/deleteEmployee?employeeid=${employeeId}`
+        `http://localhost:5000/api/employees/deleteEmployee/${employeeId}`
       );
       return response.data;
     } catch (err) {
