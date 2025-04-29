@@ -1,31 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteInterventionExterne, updateInterventionExterne } from "../redux/interventionexterneSlice/interventionexterneSlice"; // Importer les actions pour interventions externes
+import { getInterventionsExternes } from "../redux/interventionexterneSlice/interventionexterneSlice"; // Assurez-vous que cette action récupère les interventions externes
 
 const ListeInterventionsExternes = () => {
-  const [interventions, setInterventions] = useState([]);
+  const dispatch = useDispatch();
   const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentIntervention, setCurrentIntervention] = useState(null);
+  
+  // Correction ici : utiliser InterventionExterne au lieu de interventions
+  const { InterventionExterne = [], loading, error: stateError } = useSelector((state) => state.interventionexternes || {});
 
   useEffect(() => {
-    const fetchInterventions = async () => {
+    dispatch(getInterventionsExternes()); // Récupérer les interventions externes
+  }, [dispatch]);
+
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+
+  const handleEditClick = (intervention) => {
+    setCurrentIntervention(intervention);
+    setIsEditing(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsEditing(false);
+    setCurrentIntervention(null);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Dispatch the updateInterventionExterne action
+      await dispatch(
+        updateInterventionExterne({
+          interventionExterneId: currentIntervention._id,
+          updatedData: currentIntervention,
+        })
+      ).unwrap(); // Unwrap to handle fulfilled/rejected status
+
+      setIsEditing(false);
+      dispatch(getInterventionsExternes()); // Re-fetch interventions after the update
+    } catch (err) {
+      setError("Erreur lors de la mise à jour de l'intervention.");
+    }
+  };
+
+  const handleDelete = async (interventionId) => {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer cette intervention externe ?")) {
       try {
-        const response = await axios.get('/api/interventions-externes');
-        console.log("Réponse reçue :", response.data);
-
-        const data = response.data.interventions || response.data.data || response.data;
-
-        if (Array.isArray(data)) {
-          setInterventions(data);
-        } else {
-          setError("La réponse du serveur n'est pas un tableau.");
-        }
-      } catch (err) {
-        setError("Erreur lors de la récupération des interventions externes");
-        console.error(err);
+        await dispatch(deleteInterventionExterne(interventionId));
+        // After deletion, re-fetch the list of interventions externes
+        dispatch(getInterventionsExternes());
+      } catch (error) {
+        console.error("Erreur lors de la suppression :", error);
       }
-    };
-
-    fetchInterventions();
-  }, []);
+    }
+  };
 
   return (
     <div className="w-full max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-lg">
@@ -38,8 +69,8 @@ const ListeInterventionsExternes = () => {
       <div className="w-full p-6 bg-gray-100 rounded-xl shadow-lg mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Interventions Externes</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {Array.isArray(interventions) && interventions.length > 0 ? (
-            interventions.map((intervention) => (
+          {Array.isArray(InterventionExterne) && InterventionExterne.length > 0 ? (
+            InterventionExterne.map((intervention) => (
               <div
                 key={intervention._id}
                 className="p-4 bg-gray-200 rounded-xl shadow-md hover:shadow-lg transition duration-300 ease-in-out"
@@ -54,6 +85,10 @@ const ListeInterventionsExternes = () => {
                   <p className="text-sm text-gray-600">
                     Période: {new Date(intervention.dateDebut).toLocaleDateString()} - {new Date(intervention.dateFin).toLocaleDateString()}
                   </p>
+                </div>
+                <div className="flex justify-between mt-4">
+                  <button onClick={() => handleEditClick(intervention)} className="text-blue-500 hover:text-blue-700">Éditer</button>
+                  <button onClick={() => handleDelete(intervention._id)} className="text-red-500 hover:text-red-700">Supprimer</button>
                 </div>
               </div>
             ))

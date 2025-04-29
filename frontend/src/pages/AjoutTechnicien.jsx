@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaPhoneAlt, FaLock } from 'react-icons/fa';
+import { useDispatch } from "react-redux";
+import { createTechnicien } from '../redux/technicienSlice/technicienSlice';
 
 const AjoutTechnicien = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +19,7 @@ const AjoutTechnicien = () => {
   const [errors, setErrors] = useState({});
   const [passwordStrength, setPasswordStrength] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,14 +76,23 @@ const AjoutTechnicien = () => {
 
     if (Object.keys(formErrors).length === 0) {
       try {
-        const res = await axios.post('/api/techniciens/add', formData);
-        setMessage(res.data.message);
-        setTimeout(() => navigate('/techniciens'), 2000);
+        // Dispatch de l'action pour créer un technicien
+        const resultAction = await dispatch(createTechnicien(formData));
+        console.log(resultAction, "resultAction"); // Log du résultat pour le debug
+    
+        // Vérification si l'action a réussi
+        if (createTechnicien.fulfilled.match(resultAction)) {
+          navigate("/techniciens"); // Redirection vers la liste des techniciens
+        } else {
+          setMessage(
+            resultAction.payload || "Erreur lors de l'ajout du technicien."
+          );
+        }
       } catch (err) {
-        setMessage(err.response?.data?.message || "Erreur lors de l'ajout.");
+        setMessage("Une erreur est survenue. Veuillez réessayer plus tard.");
       }
     }
-  };
+  } 
 
   return (
     <div className="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-xl shadow-lg">

@@ -23,7 +23,7 @@ export const getTechniciens = createAsyncThunk(
   "techniciens/getTechniciens",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/technicien/getAllTechniciens");
+      const response = await axios.get("http://localhost:5000/api/techniciens/getAllTechniciens");
       return response.data;
     } catch (err) {
       if (err.response && err.response.data) {

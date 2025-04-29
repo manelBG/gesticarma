@@ -5,6 +5,8 @@ import fournituresReducer from "./fournitureSlice/fournitureSlice";
 import employeeReducer from "./employeeSlice/employeeSlice";
 import technicienReducer from"./technicienSlice/technicienSlice";
 import missionReducer from "./missionSlice/missionSlice";
+import interventionexterneReducer from "./interventionexterneSlice/interventionexterneSlice";
+
 
 const store = configureStore({
   reducer: {
@@ -14,6 +16,8 @@ const store = configureStore({
     employees: employeeReducer,
     techniciens: technicienReducer,
     missions: missionReducer,
+    interventionexternes: interventionexterneReducer, 
+
   },
 });
 

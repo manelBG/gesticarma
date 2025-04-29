@@ -94,7 +94,7 @@ connectToDatabase()
     
     app.use('/api/employees', employeRoutes);
 
-    app.use('/api/technicien', technicienRoutes); 
+    app.use("/api/techniciens", technicienRoutes);
 
 
     setInterval(async () => {

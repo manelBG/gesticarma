@@ -1,18 +1,25 @@
+// src/routes/technicienRoute.js
+
 import express from 'express';
-import { addTechnicien, getAllTechniciens, deleteTechnicien, updateTechnicien } from '../controllers/technicienController.js';
+import {
+  addTechnicien,
+  getAllTechniciens,
+  deleteTechnicien,
+  updateTechnicien
+} from '../controllers/technicienController.js';
 
 const router = express.Router();
 
-// Ajouter un technicien
+// 📌 Ajouter un technicien
 router.post('/createTechnicien', addTechnicien);
 
-// Récupérer tous les techniciens
+// 📌 Récupérer tous les techniciens
 router.get('/getAllTechniciens', getAllTechniciens);
 
-// Supprimer un technicien
-router.delete('/deleteTechnicien/:id', deleteTechnicien); // Utilisation de :id
+// 📌 Mettre à jour un technicien (corrigé : récupération de l'ID dans l'URL)
+router.put('/updateTechnicien/:id', updateTechnicien);
 
-// Mettre à jour un technicien
-router.put('/updateTechnicien/:id', updateTechnicien); // Utilisation de :id
+// 📌 Supprimer un technicien (corrigé : récupération de l'ID dans l'URL)
+router.delete('/deleteTechnicien/:id', deleteTechnicien);
 
 export default router;
