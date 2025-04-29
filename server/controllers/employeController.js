@@ -15,7 +15,7 @@ export const addEmploye = async (req, res) => {
     }
 
     // Générer un mot de passe automatique (par ex. 8 caractères aléatoires)
-    const generatedPassword = crypto.randomBytes(4).toString("hex"); // ex: "a1b2c3d4"
+    // const generatedPassword = crypto.randomBytes(4).toString("hex"); // ex: "a1b2c3d4"
 
     // Hasher ce mot de passe avant de le sauvegarder
     // const hashedPassword = await bcrypt.hash(generatedPassword, 10);

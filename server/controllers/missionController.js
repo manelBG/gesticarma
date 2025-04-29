@@ -1,6 +1,7 @@
 import { sendNotification } from '../utils/sendNotification.js';
 import User from '../models/User.js';
 import Mission from '../models/Mission.js'; // Assure-toi d'importer le modèle Mission
+import Vehicule from '../models/Vehicule.js';
 
 // ✔️ Créer une mission et envoyer une notification au directeur
 export const createMission = async (req, res) => {
@@ -9,20 +10,26 @@ export const createMission = async (req, res) => {
     await mission.save();
 
     // ✅ Notification au directeur
-    const directeur = await User.findOne({ role: 'directeur' });
+    const directeur = await User.findOne({ role: "directeur" });
     if (directeur) {
       await sendNotification(
         directeur._id,
-        'mission',
+        "mission",
         `Une nouvelle mission a été créée par l'employé ${mission.employee} pour le véhicule ${mission.vehicule}.`
       );
     }
+
+    // ✅ Mise à jour du statut du véhicule
+    await Vehicule.findByIdAndUpdate(mission.vehicule, {
+      statut: "En mission",
+    });
 
     res.status(201).json(mission);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
+
 
 // ✔️ Mettre à jour une mission (et notifier l’employé)
 export const updateMission = async (req, res) => {

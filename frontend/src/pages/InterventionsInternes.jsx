@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteIntervention, updateIntervention } from "../redux/interventionSlice/interventionSlice";
+import {
+  deleteIntervention,
+  updateIntervention,
+} from "../redux/interventionSlice/interventionSlice";
 import { getInterventions } from "../redux/interventionSlice/interventionSlice"; // Assuming this fetches the interventions
 
 const ListeInterventionsInternes = () => {
@@ -9,13 +12,13 @@ const ListeInterventionsInternes = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentIntervention, setCurrentIntervention] = useState(null);
   const { listIntervention } = useSelector((state) => state.interventions);
-
+  console.log(listIntervention, "listIntervention");
   useEffect(() => {
     dispatch(getInterventions());
   }, [dispatch]);
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
-
+  console.log(storedUser?._id, "storedUserstoredUserstoredUser");
   const handleEditClick = (intervention) => {
     setCurrentIntervention(intervention);
     setIsEditing(true);
@@ -44,102 +47,117 @@ const ListeInterventionsInternes = () => {
     }
   };
 
-    const handleDelete = async (interventionId) => {
-      if (window.confirm("Êtes-vous sûr de vouloir supprimer ce intervention ?")) {
-        try {
-          await dispatch(deleteIntervention(interventionId));
-          // After deletion, re-fetch the list of vehicles
-          dispatch(getInterventions());
-        } catch (error) {
-          console.error("Erreur lors de la suppression :", error);
-        }
+  const handleDelete = async (interventionId) => {
+    if (
+      window.confirm("Êtes-vous sûr de vouloir supprimer ce intervention ?")
+    ) {
+      try {
+        await dispatch(deleteIntervention(interventionId));
+        // After deletion, re-fetch the list of vehicles
+        dispatch(getInterventions());
+      } catch (error) {
+        console.error("Erreur lors de la suppression :", error);
       }
-    };
-  
+    }
+  };
+
   return (
     <div className="w-full max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-lg">
       <h1 className="text-4xl font-pacifico text-black mb-6 text-center">
         Liste des Interventions Internes
       </h1>
-
       {/* Affichage des erreurs */}
       {/* {error && <div className="text-red-500 mb-4">{error}</div>} */}
-
       {/* Liste des interventions */}
       <div className="w-full p-6 bg-gray-100 rounded-xl shadow-lg mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
           Interventions Internes
         </h2>
-
+        {storedUser?.role === "technicien" && (
+          <div className="flex justify-end mb-4">
+            <a
+              href="/intervention/ajouter"
+              className="bg-gray-600 hover:bg-gray-800 text-white font-semibold px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out flex items-center gap-2"
+            >
+              + Ajouter une intervention
+            </a>
+          </div>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {Array.isArray(listIntervention) && listIntervention.length > 0 ? (
-            listIntervention.map((intervention) => (
-              <div
-                key={intervention._id}
-                className="p-4 bg-gray-200 rounded-xl shadow-md hover:shadow-lg transition duration-300 ease-in-out"
-              >
-                <div className="flex flex-col gap-2">
-                  <h3 className="font-semibold text-xl text-gray-800">
-                    {intervention.description}
-                  </h3>
+            listIntervention
+              .filter((intervention) => {
+                // Si directeur, il voit tout
+                if (storedUser?.role === "admin") return true;
+                // Sinon, il voit uniquement ses propres interventions
+                return intervention?.technicien?._id === storedUser?._id;
+              })
+              .map((intervention) => (
+                <div
+                  key={intervention._id}
+                  className="p-4 bg-gray-200 rounded-xl shadow-md hover:shadow-lg transition duration-300 ease-in-out"
+                >
+                  <div className="flex flex-col gap-2">
+                    <h3 className="font-semibold text-xl text-gray-800">
+                      {intervention.description}
+                    </h3>
 
-                  <p className="text-sm text-gray-600">
-                    <strong>Technicien:</strong>{" "}
-                    {intervention.technicien
-                      ? intervention.technicien.nom ||
-                        intervention.technicien.name
-                      : "Non assigné"}
-                  </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Technicien:</strong>{" "}
+                      {intervention.technicien
+                        ? intervention.technicien.prenom
+                        : "Non assigné"}
+                    </p>
 
-                  <p className="text-sm text-gray-600">
-                    <strong>Véhicule:</strong>{" "}
-                    {intervention.vehicule
-                      ? `${intervention.vehicule.marque} ${intervention.vehicule.modele}`
-                      : "Non assigné"}
-                  </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Véhicule:</strong>{" "}
+                      {intervention.vehicule
+                        ? `${intervention.vehicule.marque} ${intervention.vehicule.modele}`
+                        : "Non assigné"}
+                    </p>
 
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Statut:</span>{" "}
-                    {intervention.statut}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Type:</span>{" "}
-                    {intervention.type}
-                  </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Statut:</span>{" "}
+                      {intervention.statut}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Type:</span>{" "}
+                      {intervention.type}
+                    </p>
 
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Kilométrage:</span>{" "}
-                    {intervention.kilometrage} km
-                  </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Kilométrage:</span>{" "}
+                      {intervention.kilometrage} km
+                    </p>
 
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Date:</span>{" "}
-                    {new Date(
-                      intervention.dateIntervention
-                    ).toLocaleDateString()}
-                  </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Date:</span>{" "}
+                      {new Date(
+                        intervention.dateIntervention
+                      ).toLocaleDateString()}
+                    </p>
 
-                  {/* Edit button */}
-                  {storedUser?.role === "technicien" && (
-                    <>
-                      <button
-                        onClick={() => handleEditClick(intervention)}
-                        className="bg-yellow-500 text-white px-4 py-2 rounded-full mt-4 hover:bg-yellow-600"
-                      >
-                        Modifier
-                      </button>
+                    {/* Edit button */}
+                    {storedUser?.role === "technicien" && (
+                      <>
+                        <button
+                          onClick={() => handleEditClick(intervention)}
+                          className="bg-yellow-500 text-white px-4 py-2 rounded-full mt-4 hover:bg-yellow-600"
+                        >
+                          Modifier
+                        </button>
 
-                      <button
-                        className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
-                        onClick={() => handleDelete(intervention._id)}
-                      >
-                        Supprimer
-                      </button>
-                    </>
-                  )}
+                        <button
+                          className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
+                          onClick={() => handleDelete(intervention._id)}
+                        >
+                          Supprimer
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))
+              ))
           ) : (
             <p className="text-center col-span-3">
               Aucune intervention interne disponible.

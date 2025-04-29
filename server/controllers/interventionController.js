@@ -1,6 +1,7 @@
 import { sendNotification } from "../utils/sendNotification.js";
 import User from "../models/User.js";
 import Intervention from "../models/Intervention.js";
+import Vehicule from "../models/Vehicule.js";
 
 export const createIntervention = async (req, res) => {
   try {
@@ -29,6 +30,7 @@ export const createIntervention = async (req, res) => {
     });
 
     const savedIntervention = await intervention.save();
+    await Vehicule.findByIdAndUpdate(vehicule, { statut: "En maintenance" });
 
     // ✅ Notification au directeur
     const directeur = await User.findOne({ role: "directeur" });

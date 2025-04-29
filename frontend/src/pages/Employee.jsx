@@ -146,7 +146,9 @@ const Employes = () => {
               placeholder="Nom"
               className="p-2 border rounded"
               value={newEmploye.nom}
-              onChange={(e) => setNewEmploye({ ...newEmploye, nom: e.target.value })}
+              onChange={(e) =>
+                setNewEmploye({ ...newEmploye, nom: e.target.value })
+              }
               required
             />
             <input
@@ -154,7 +156,9 @@ const Employes = () => {
               placeholder="Prénom"
               className="p-2 border rounded"
               value={newEmploye.prenom}
-              onChange={(e) => setNewEmploye({ ...newEmploye, prenom: e.target.value })}
+              onChange={(e) =>
+                setNewEmploye({ ...newEmploye, prenom: e.target.value })
+              }
               required
             />
             <input
@@ -162,7 +166,9 @@ const Employes = () => {
               placeholder="Email"
               className="p-2 border rounded"
               value={newEmploye.email}
-              onChange={(e) => setNewEmploye({ ...newEmploye, email: e.target.value })}
+              onChange={(e) =>
+                setNewEmploye({ ...newEmploye, email: e.target.value })
+              }
               required
             />
             <input
@@ -170,7 +176,9 @@ const Employes = () => {
               placeholder="Téléphone"
               className="p-2 border rounded"
               value={newEmploye.telephone}
-              onChange={(e) => setNewEmploye({ ...newEmploye, telephone: e.target.value })}
+              onChange={(e) =>
+                setNewEmploye({ ...newEmploye, telephone: e.target.value })
+              }
               required
             />
           </div>
@@ -188,14 +196,18 @@ const Employes = () => {
           onSubmit={handleUpdateEmploye}
           className="mb-6 bg-gray-100 p-6 rounded-xl shadow-inner"
         >
-          <h2 className="text-2xl font-semibold text-center mb-4">Modifier l'Employé</h2>
+          <h2 className="text-2xl font-semibold text-center mb-4">
+            Modifier l'Employé
+          </h2>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <input
               type="text"
               placeholder="Nom"
               className="p-2 border rounded"
               value={formData.nom}
-              onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, nom: e.target.value })
+              }
               required
             />
             <input
@@ -203,7 +215,9 @@ const Employes = () => {
               placeholder="Prénom"
               className="p-2 border rounded"
               value={formData.prenom}
-              onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, prenom: e.target.value })
+              }
               required
             />
             <input
@@ -211,7 +225,9 @@ const Employes = () => {
               placeholder="Email"
               className="p-2 border rounded"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               required
             />
             <input
@@ -219,7 +235,9 @@ const Employes = () => {
               placeholder="Téléphone"
               className="p-2 border rounded"
               value={formData.telephone}
-              onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, telephone: e.target.value })
+              }
               required
             />
           </div>
@@ -265,21 +283,21 @@ const Employes = () => {
                   <td className="px-4 py-3 border-b">{employe.email}</td>
                   <td className="px-4 py-3 border-b">{employe.telephone}</td>
                   <td className="px-4 py-3 border-b text-sm text-gray-500 italic">
-                    {employe.lastLogin
-                      ? new Date(employe.lastLogin).toLocaleString()
-                      : 'Jamais'}
+                    {employe.updatedAt
+                      ? new Date(employe.updatedAt).toLocaleString()
+                      : "Jamais"}
                   </td>
                   <td className="px-4 py-3 border-b">
-                    <div className="flex items-center gap-2 whitespace-nowrap"> 
+                    <div className="flex items-center gap-2 whitespace-nowrap">
                       <button
-                       className="bg-yellow-400 hover:bg-yellow-500 text-white py-1 px-3 rounded-full"
-                       onClick={() => handleEditClick(employe)}
-                     >
+                        className="bg-yellow-400 hover:bg-yellow-500 text-white py-1 px-3 rounded-full"
+                        onClick={() => handleEditClick(employe)}
+                      >
                         Modifier
                       </button>
                       <button
-                       className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
-                       onClick={() => handleDelete(employe._id)}
+                        className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
+                        onClick={() => handleDelete(employe._id)}
                       >
                         Supprimer
                       </button>
@@ -297,8 +315,8 @@ const Employes = () => {
           </tbody>
         </table>
       </div>
-    {/* Formulaire de mise à jour employé (style moderne intégré) */}
-    {selectedEmploye && (
+      {/* Formulaire de mise à jour employé (style moderne intégré) */}
+      {selectedEmploye && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full mx-4">
             <div className="flex justify-between items-center mb-6">
@@ -399,8 +417,10 @@ const Employes = () => {
                     }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white"
                     required
-                  >  
-                    <option value="" disabled>-- Choisir un genre --</option>
+                  >
+                    <option value="" disabled>
+                      -- Choisir un genre --
+                    </option>
                     <option value="Homme">Homme</option>
                     <option value="Femme">Femme</option>
                   </select>

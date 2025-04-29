@@ -8,14 +8,14 @@ const router = express.Router();
 
 
 // Récupérer toutes les missions (admin)
-router.get('/', verifyToken(['admin']), getAllMissions);
+router.get("/getAllMissions", getAllMissions);
 
 // Récupérer les missions par employé
 
 router.get('/employee/:id', verifyToken(['admin', 'employee']), getMissionsByEmployee);
 
 // Créer une mission (employé ou admin)
-router.post('/', verifyToken(['admin', 'employee' , 'technicien']), createMission);
+router.post("/createMission", createMission);
 
 // 🧹 Supprimer une mission
 router.delete('/:id', deleteMission);

@@ -42,9 +42,14 @@ export const addTechnicien = async (req, res) => {
       to: email,
       subject: "Bienvenue sur GestiCarma 🚗",
       html: `
-        <h3>Bonjour ${prenom} ${nom},</h3>
-        <p>Votre compte ${role} a bien été créé sur <strong>GestiCarma</strong>.</p>
-        <p>Merci de nous rejoindre !</p>
+       <h3>Bonjour ${prenom} ${nom},</h3>
+        <p>Votre compte employé a été créé avec succès sur <strong>GestiCarma</strong>.</p>
+        <p>Voici vos identifiants de connexion :</p>
+        <ul>
+          <li><strong>Email :</strong> ${email}</li>
+          <li><strong>Mot de passe :</strong> ${password}</li>
+        </ul>
+        <p><em>Nous vous recommandons de changer votre mot de passe après votre première connexion.</em></p>
       `,
     };
 
@@ -72,7 +77,9 @@ export const getAllTechniciens = async (req, res) => {
     const techniciens = await User.find({ role: "technicien" }); // Recherche les utilisateurs avec le rôle 'technicien'
     res.status(200).json(techniciens);
   } catch (error) {
-    res.status(500).json({ message: "Erreur lors de la récupération des techniciens." });
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la récupération des techniciens." });
   }
 };
 

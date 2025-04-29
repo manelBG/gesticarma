@@ -5,11 +5,11 @@ import axios from "axios";
 // 📌 Créer un technicien (POST)
 export const createTechnicien = createAsyncThunk(
   "techniciens/createTechnicien",
-  async (technicienData, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         "http://localhost:5000/api/techniciens/createTechnicien",
-        technicienData
+        formData
       );
       return response.data;
     } catch (err) {
@@ -41,7 +41,7 @@ export const updateTechnicien = createAsyncThunk(
   async ({ technicienId, updatedData }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/techniciens/updateTechnicien?technicienid=${technicienId}`,
+        `http://localhost:5000/api/techniciens/updateTechnicien/${technicienId}`,
         updatedData
       );
       return response.data;
@@ -61,7 +61,7 @@ export const deleteTechnicien = createAsyncThunk(
   async (technicienId, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/techniciens/deleteTechnicien?technicienid=${technicienId}`
+        `http://localhost:5000/api/techniciens/deleteTechnicien/${technicienId}`
       );
       return response.data;
     } catch (err) {

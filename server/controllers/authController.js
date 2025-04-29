@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
 const login = async (req, res) => {
   try {
@@ -8,7 +8,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     // Trouver l'utilisateur par email et inclure explicitement le champ password
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select("+password");
     console.log("🔍 Utilisateur trouvé :", user ? "Oui" : "Non");
 
     if (!user) {
@@ -22,6 +22,8 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ success: false, error: "Wrong Password" });
     }
+    user.updatedAt = new Date();
+    await user.save();
 
     // Génération du token JWT
     const token = jwt.sign(
@@ -41,13 +43,14 @@ const login = async (req, res) => {
         email: user.email,
         role: user.role,
         genre: user.genre,
-        telephone: user.telephone
+        telephone: user.telephone,
       },
     });
-
   } catch (error) {
     console.error("🔥 Erreur dans login:", error);
-    return res.status(500).json({ success: false, error: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error" });
   }
 };
 
