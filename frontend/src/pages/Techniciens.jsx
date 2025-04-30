@@ -210,9 +210,9 @@ const Techniciens = () => {
                   <td className="px-4 py-3 border-b">{technicien.email}</td>
                   <td className="px-4 py-3 border-b">{technicien.telephone}</td>
                   <td className="px-4 py-3 border-b text-sm text-gray-500 italic">
-                    {technicien.lastLogin
-                      ? new Date(technicien.lastLogin).toLocaleString()
-                      : 'Jamais'}
+                    {technicien.updatedAt
+                      ? new Date(technicien.updatedAt).toLocaleString()
+                      : "Jamais"}
                   </td>
                   <td className="px-4 py-3 border-b">
                     <div className="flex items-center gap-2 whitespace-nowrap">

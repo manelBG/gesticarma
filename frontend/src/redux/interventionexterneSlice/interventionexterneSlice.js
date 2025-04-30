@@ -24,8 +24,8 @@ export const getInterventionsExternes = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/interventionsExterne/allInterventionsExternes"
-      );
+          "http://localhost:5000/api/interventions-externes/interventionsExterne"      
+             );
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);

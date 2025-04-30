@@ -1,59 +1,34 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { getMissions } from "../redux/missionSlice/missionSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { deleteMission, updateMission, getMissions, getMissionsByUserId } from "../redux/missionSlice/missionSlice";
+import { useAuth } from "../hooks/useAuth"; // récupère l'utilisateur connecté
 
 const ListeMissions = () => {
-  const [missions, setMissions] = useState([]);
-  const [error, setError] = useState(null);
   const dispatch = useDispatch();
+  const { listMission, error } = useSelector((state) => state.missions);
+  const { user } = useAuth(); // Assure-toi que ton hook renvoie bien l'objet user
 
-  const { listMission } = useSelector((state) => state.missions);
-  console.log(listMission, "listMission");
   useEffect(() => {
-    dispatch(getMissions());
-  }, [dispatch]);
-  // useEffect(() => {
-  //   const fetchMissions = async () => {
-  //     try {
-  //       const response = await axios.get('/api/missions');
-  //       console.log(response.data); // Vérifie la structure de la réponse
-  //       if (Array.isArray(response.data)) {
-  //         setMissions(response.data);
-  //       } else {
-  //         setError('La réponse n\'est pas un tableau.');
-  //       }
-  //     } catch (err) {
-  //       setError('Erreur lors de la récupération des missions');
-  //       console.error(err);
-  //     }
-  //   };
+    if (!user) return;
 
-  //   fetchMissions();
-  // }, []);
+    // Si admin ou technicien → toutes les missions
+    if (user.role === "admin" || user.role === "technicien") {
+      dispatch(getMissions());
+    } 
+    // Sinon (employé) → missions par userId
+    else {
+      dispatch(getMissionsByUserId(user._id));
+    }
+  }, [dispatch, user]);
 
-  // Classes de couleur pour chaque statut
   const statutCouleurs = {
-    "en attente": "bg-blue-100 border-blue-300", // Bleu clair
-    "en cours": "bg-gray-100 border-gray-300", // Gris clair
-    terminée: "bg-indigo-100 border-indigo-300", // Indigo clair
+    "en attente": "bg-blue-100 border-blue-300",
+    "en cours": "bg-gray-100 border-gray-300",
+    "terminée": "bg-teal-100 border-teal-300",
   };
 
-  const handleSwitchStatut = async (missionId, newStatut) => {
-    try {
-      const response = await axios.put(`/api/missions/${missionId}`, {
-        statut: newStatut,
-      });
-      setMissions((prevMissions) =>
-        prevMissions.map((mission) =>
-          mission._id === missionId
-            ? { ...mission, statut: newStatut }
-            : mission
-        )
-      );
-    } catch (err) {
-      console.error("Erreur lors de la mise à jour du statut", err);
-    }
+  const handleSwitchStatut = (missionId, newStatut) => {
+    dispatch(updateMission({ missionId, updatedData: { statut: newStatut } }));
   };
 
   return (
@@ -62,15 +37,12 @@ const ListeMissions = () => {
         Liste des Missions
       </h1>
 
-      {/* Affichage des erreurs */}
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
-      {/* Grand carré regroupant les statuts */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {["en attente", "en cours", "terminée"].map((statut) => {
-          const missionsStatut = missions.filter(
-            (mission) => mission.statut === statut
-          );
+          const missionsStatut = listMission.filter((m) => m.statut === statut);
+
           return (
             <div
               key={statut}
@@ -80,70 +52,52 @@ const ListeMissions = () => {
                 {statut}
               </h2>
               <div className="space-y-4">
-                {listMission.filter((mission) => mission.statut === statut)
-                  .length > 0 ? (
-                  listMission
-                    .filter((mission) => mission.statut === statut)
-                    .map((mission) => (
-                      <div
-                        key={mission._id}
-                        className="p-4 mb-4 bg-white rounded-lg shadow-sm"
-                      >
-                        <h3 className="text-lg font-semibold text-gray-800">
-                          {mission.description}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          Véhicule: {mission.vehicule.marque}:
-                          {mission.vehicule.immatriculation}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Date de début:{" "}
-                          {new Date(mission.dateDebut).toLocaleString()}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Date de fin:{" "}
-                          {mission.dateFin
-                            ? new Date(mission.dateFin).toLocaleString()
-                            : "Non définie"}
-                        </p>
+                {missionsStatut.length > 0 ? (
+                  missionsStatut.map((mission) => (
+                    <div
+                      key={mission._id}
+                      className="p-4 mb-4 bg-white rounded-lg shadow-sm"
+                    >
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        {mission.description}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Véhicule: {mission.vehicule?.marque} : {mission.vehicule?.immatriculation}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Date de début: {new Date(mission.dateDebut).toLocaleString()}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Date de fin:{" "}
+                        {mission.dateFin ? new Date(mission.dateFin).toLocaleString() : "Non définie"}
+                      </p>
 
-                        {/* <p className="text-sm text-gray-600">
-                          Kilométrage de début: {mission.kilometrageDebut} km
-                        </p> */}
+                      <div className="mt-4 flex items-center space-x-4">
+                        {statut !== "terminée" && (
+                          <button
+                            onClick={() =>
+                              handleSwitchStatut(
+                                mission._id,
+                                statut === "en attente" ? "en cours" : "terminée"
+                              )
+                            }
+                            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                          >
+                            {statut === "en attente" ? "Démarrer" : "Terminer"}
+                          </button>
+                        )}
 
-                        {/* Switch Button pour changer le statut */}
-                        <div className="mt-4 flex items-center space-x-4">
-                          {statut !== "terminée" && (
-                            <button
-                              onClick={() =>
-                                handleSwitchStatut(
-                                  mission._id,
-                                  statut === "en attente"
-                                    ? "en cours"
-                                    : "terminée"
-                                )
-                              }
-                              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-                            >
-                              {statut === "en attente"
-                                ? "Démarrer"
-                                : "Marquer comme Terminée"}
-                            </button>
-                          )}
-
-                          {statut !== "en attente" && (
-                            <button
-                              onClick={() =>
-                                handleSwitchStatut(mission._id, "en attente")
-                              }
-                              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-                            >
-                              Revenir à l'attente
-                            </button>
-                          )}
-                        </div>
+                        {statut !== "en attente" && (
+                          <button
+                            onClick={() => handleSwitchStatut(mission._id, "en attente")}
+                            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                          >
+                            Revenir à l'attente
+                          </button>
+                        )}
                       </div>
-                    ))
+                    </div>
+                  ))
                 ) : (
                   <p>Aucune mission {statut} disponible.</p>
                 )}

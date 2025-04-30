@@ -37,6 +37,16 @@ export const getMissions = createAsyncThunk(
   }
 );
 
+export const getMissionsByUserId = createAsyncThunk(
+  'missions/getMissionsByUserId',
+  async (userId) => {
+      const response = await axios.get(`/api/missions/${userId}`); // Appel API pour récupérer les missions
+      return response.data; // Retourner les données de mission
+  }
+);
+
+
+
 // 📌 Mettre à jour une mission (PUT)
 export const updateMission = createAsyncThunk(
   "missions/updateMission",
@@ -108,6 +118,18 @@ const missionSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message || "Une erreur s'est produite";
       })
+      .addCase(getMissionsByUserId.pending, (state) => {
+        state.status = 'loading';
+    })
+    .addCase(getMissionsByUserId.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.missions = action.payload; // Mettre les missions récupérées dans l'état
+    })
+    .addCase(getMissionsByUserId.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+    })
+
       // updateMission
       .addCase(updateMission.pending, (state) => {
         state.loading = true;

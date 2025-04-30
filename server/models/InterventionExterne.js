@@ -13,6 +13,11 @@ const interventionExterneSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  technicien: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User", // <- Si ton technicien est dans le modèle User
+        // required: true,
+  },
   vehicule: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Vehicule',

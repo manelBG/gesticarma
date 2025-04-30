@@ -6,8 +6,12 @@ import Vehicule from '../models/Vehicule.js';
 // ✔️ Créer une mission et envoyer une notification au directeur
 export const createMission = async (req, res) => {
   try {
-    const mission = new Mission(req.body);
-    await mission.save();
+    const newMission = new Mission({
+      ...req.body,
+      createdBy: req.user.id, // ← Ajout ici
+    });
+
+    await newMission.save();
 
     // ✅ Notification au directeur
     const directeur = await User.findOne({ role: "directeur" });
@@ -84,22 +88,40 @@ export const getAllMissions = async (req, res) => {
   }
 };
 
-export const getMissionsByEmployee = async (req, res) => {
+export const getMissions = async (req, res) => {
   try {
-    const employeeId = req.params.id;
+    const user = req.user;
 
+    let missions;
 
-    // 🔍 Logs pour vérifier ce qui se passe
-    console.log("ID reçu :", employeeId);
+    // Admin & Technicien → tout voir
+    if (user.role === "admin" || user.role === "technicien") {
+      missions = await Mission.find().populate("vehicule employee createdBy");
+    }
 
-    const missions = await Mission.find({ employee: employeeId});
-    
-
-    console.log("Missions trouvées :", missions);
+    // Employé → seulement les missions qu’il a créées
+    else if (user.role === "employee") {
+      missions = await Mission.find({ createdBy: user._id }).populate("vehicule employee createdBy");
+    }
 
     res.status(200).json(missions);
   } catch (error) {
-    console.error("Erreur lors de la récupération des missions :", error);
-    res.status(500).json({ message: "Erreur serveur" });
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getMissionsByUserId = async (req, res) => {
+  try {
+      const userId = req.params.userId; // Récupérer l'userId depuis les paramètres de la route
+      const missions = await Mission.find({ createdBy: userId }); // Trouver toutes les missions créées par cet employé
+
+      if (!missions || missions.length === 0) {
+          return res.status(404).json({ message: "Aucune mission trouvée pour cet employé." });
+      }
+
+      return res.status(200).json(missions); // Retourner les missions
+  } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Erreur lors de la récupération des missions." });
   }
 };

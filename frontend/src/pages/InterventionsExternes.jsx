@@ -10,8 +10,9 @@ const ListeInterventionsExternes = () => {
   const [currentIntervention, setCurrentIntervention] = useState(null);
   
   // Correction ici : utiliser InterventionExterne au lieu de interventions
-  const { InterventionExterne = [], loading, error: stateError } = useSelector((state) => state.interventionexternes || {});
-
+  const { InterventionExterne = [], loading, error: stateError } = useSelector(
+    (state) => state.interventionexterne || {} // ✅ Nom exact du slice
+  );
   useEffect(() => {
     dispatch(getInterventionsExternes()); // Récupérer les interventions externes
   }, [dispatch]);
@@ -64,10 +65,21 @@ const ListeInterventionsExternes = () => {
 
       {/* Affichage des erreurs */}
       {error && <div className="text-red-500 mb-4">{error}</div>}
+      {storedUser?.role === "technicien" && (
+          <div className="flex justify-end mb-4">
+            <a
+              href="/interventionexterne/ajouter"
+              className="bg-gray-600 hover:bg-gray-800 text-white font-semibold px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out flex items-center gap-2"
+            >
+              + creér une intervention externe 
+            </a>
+          </div>
+        )}
 
       {/* Carte centrale avec les petites cartes */}
       <div className="w-full p-6 bg-gray-100 rounded-xl shadow-lg mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Interventions Externes</h2>
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {Array.isArray(InterventionExterne) && InterventionExterne.length > 0 ? (
             InterventionExterne.map((intervention) => (

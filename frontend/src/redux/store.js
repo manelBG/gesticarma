@@ -6,6 +6,7 @@ import employeeReducer from "./employeeSlice/employeeSlice";
 import technicienReducer from"./technicienSlice/technicienSlice";
 import missionReducer from "./missionSlice/missionSlice";
 import interventionexterneReducer from "./interventionexterneSlice/interventionexterneSlice";
+import prestataireReducer from './prestataireSlice/prestataireSlice';
 
 
 const store = configureStore({
@@ -16,7 +17,9 @@ const store = configureStore({
     employees: employeeReducer,
     techniciens: technicienReducer,
     missions: missionReducer,
-    interventionexternes: interventionexterneReducer, 
+    interventionexternes: interventionexterneReducer,
+    prestataire: prestataireReducer,
+
 
   },
 });

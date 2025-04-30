@@ -26,12 +26,12 @@ const PlanMissionForm = () => {
     endDate: "",
     endTime: "",
     vehicule: "",
-    priority: "Normale",
+    priority: "",
     notes: "",
     statut: "en attente",
   });
 
-  console.log(formData, "formDatapan");
+  console.log("formDatapan:", formData);
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {

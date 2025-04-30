@@ -421,8 +421,8 @@ const Employes = () => {
                     <option value="" disabled>
                       -- Choisir un genre --
                     </option>
-                    <option value="Homme">Homme</option>
-                    <option value="Femme">Femme</option>
+                    <option value="male">male</option>
+                    <option value="female">female</option>
                   </select>
                 </div>
               </div>

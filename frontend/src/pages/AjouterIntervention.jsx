@@ -215,7 +215,7 @@ const AjoutIntervention = () => {
         <div className="mb-4 flex justify-end">
           <button
             type="submit"
-            className="bg-orange-500 text-white font-semibold py-2 px-6 rounded-md shadow-md hover:bg-orange-600"
+            className="bg-gray-600 text-white font-semibold py-2 px-6 rounded-md shadow-md hover:bg-gray-600"
           >
             Ajouter l'Intervention
           </button>
