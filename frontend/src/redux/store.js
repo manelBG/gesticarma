@@ -7,6 +7,7 @@ import technicienReducer from"./technicienSlice/technicienSlice";
 import missionReducer from "./missionSlice/missionSlice";
 import interventionexterneReducer from "./interventionexterneSlice/interventionexterneSlice";
 import prestataireReducer from './prestataireSlice/prestataireSlice';
+import notificationReducer from "./notificationSlice/notificationSlice";
 
 
 const store = configureStore({
@@ -19,6 +20,7 @@ const store = configureStore({
     missions: missionReducer,
     interventionexternes: interventionexterneReducer,
     prestataire: prestataireReducer,
+    notification: notificationReducer,
 
 
   },

@@ -4,12 +4,12 @@ import bcrypt from "bcrypt";
 const userSchema = new mongoose.Schema({
   nom:{
     type: String,
-    required: [true, "Le nom est obligatoire"],
+    // required: [true, "Le nom est obligatoire"],
     trim: true
   },
   prenom: {
     type: String,
-    required: [true, "Le prenom est obligatoire"],
+    // required: [true, "Le prenom est obligatoire"],
     trim: true
   },
   email: {
@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
   },
   telephone:{
     type: String,
-    required: [true, "Le numéro de téléphone est obligatoire"],
+    // required: [true, "Le numéro de téléphone est obligatoire"],
     trim: true,
     match: [/^\d{8}$/, "Le numéro de téléphone doit contenir exactement 8 chiffres"]
   },

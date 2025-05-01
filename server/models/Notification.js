@@ -9,12 +9,12 @@ const notificationSchema = new mongoose.Schema({
   destinataireId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    // required: true,
   },
   type: {
     type: String,
     enum: ['intervention', 'mission'],
-    required: true,
+    // required: true,
   },
   sousType: {
     type: String,
@@ -29,7 +29,7 @@ const notificationSchema = new mongoose.Schema({
   },
   message: {
     type: String,
-    required: true,
+    // required: true,
   },
   dateCreation: {
     type: Date,

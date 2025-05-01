@@ -7,23 +7,26 @@ export const createNotification = async (req, res) => {
     const newNotification = new Notification({
       destinataireId,
       type,
-      message
+      message,
     });
 
     await newNotification.save();
-    res.status(201).json({ message: "Notification créée", notification: newNotification });
-
+    res
+      .status(201)
+      .json({ message: "Notification créée", notification: newNotification });
   } catch (error) {
     res.status(500).json({ message: "Erreur lors de la création", error });
   }
 };
 
 // Récupérer toutes les notifications (moins de 30 jours)
+// controller
 export const getUserNotifications = async (req, res) => {
   try {
+    const userId = req.params.userId;
     const notifications = await Notification.find({
-      destinataireId: req.user.id,
-      dateCreation: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
+      destinataireId: userId,
+      dateCreation: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
     }).sort({ dateCreation: -1 });
 
     res.status(200).json(notifications);

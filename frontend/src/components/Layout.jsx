@@ -12,20 +12,17 @@ import {
   Layers,
   Box,
   ChevronRight,
-  Home
+  Home,
 } from "lucide-react";
 import { cn } from "../utils/utils";
 import { Tooltip } from "../components/ui/tooltip";
 import { Link, useNavigate, Outlet, useLocation } from "react-router-dom";
 import Breadcrumb from "./Breadcrumb";
+import io from "socket.io-client";
 
 function GesticarmaLogo({ className }) {
   return (
-    <img
-      className={className}
-      src="/images/logo.jpg"
-      alt="Gesticar Logo"
-    />
+    <img className={className} src="/images/logo.jpg" alt="Gesticar Logo" />
   );
 }
 
@@ -38,7 +35,9 @@ function SideItem({ icon: Icon, label, path, active }) {
         active && "bg-blue-50 font-medium"
       )}
     >
-      <Icon className={cn("w-5 h-5", active ? "text-blue-600" : "text-blue-400")} />
+      <Icon
+        className={cn("w-5 h-5", active ? "text-blue-600" : "text-blue-400")}
+      />
       <span className="text-sm font-medium">{label}</span>
       {active && (
         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-blue-600 rounded-r-md" />
@@ -52,26 +51,80 @@ export default function Layout() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [notificationCount, setNotificationCount] = useState(0); // State to store notifications count
+  console.log(notificationCount, "notificationCount");
+  const [notifications, setNotifications] = useState([]); // To store the list of notifications (optional)
   const navigate = useNavigate();
   const location = useLocation();
   const path = location.pathname.split("/").filter(Boolean);
   const currentPage = path.length ? path[path.length - 1] : "Accueil";
-console.log(user, "user");
+  console.log(user, "user");
+  const socket = io("http://localhost:5000");
+
+  useEffect(() => {
+    if (!socket || !user?._id) return;
+
+    socket.emit("join", user._id);
+
+    const handleNotification = (data) => {
+      console.log("📩 Realtime notification receivedddddddd:", data);
+
+      setNotifications((prev) => {
+        const exists = prev.find((n) => n._id === data._id);
+        if (exists) return prev;
+
+        // Only increment if it's a new notification
+        setNotificationCount((prevCount) => prevCount + 1);
+        return [...prev, data];
+      });
+    };
+
+    socket.on("receive-notification", handleNotification);
+
+    return () => {
+      socket.off("receive-notification", handleNotification);
+    };
+  }, [socket]);
+
+  const handleViewNotifications = () => {
+    // Reset the unread notifications count when the user views them
+    setNotificationCount(0);
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         setTimeout(() => {
-          const storedUser = JSON.parse(localStorage.getItem('user'));
+          const storedUser = JSON.parse(localStorage.getItem("user"));
           if (storedUser) {
             setUser(storedUser);
           } else {
-            navigate('/login');
+            navigate("/login");
           }
           setLoading(false);
         }, 300);
       } catch (error) {
         console.error("Erreur de chargement de l'utilisateur:", error);
-        navigate('/login');
+        navigate("/login");
+      }
+    };
+    fetchUser();
+  }, [navigate]);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setTimeout(() => {
+          const storedUser = JSON.parse(localStorage.getItem("user"));
+          if (storedUser) {
+            setUser(storedUser);
+          } else {
+            navigate("/login");
+          }
+          setLoading(false);
+        }, 300);
+      } catch (error) {
+        console.error("Erreur de chargement de l'utilisateur:", error);
+        navigate("/login");
       }
     };
     fetchUser();
@@ -80,8 +133,8 @@ console.log(user, "user");
   const isActive = (path) => window.location.pathname === path;
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/login');
+    localStorage.removeItem("user");
+    navigate("/login");
   };
 
   if (loading) {
@@ -92,9 +145,10 @@ console.log(user, "user");
     );
   }
 
-  const userImage = user?.genre === "male"
-    ? "/images/user-male.jpg"
-    : "/images/user-femmale.jpg";
+  const userImage =
+    user?.genre === "male"
+      ? "/images/user-male.jpg"
+      : "/images/user-femmale.jpg";
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100 font-sans transition-colors duration-200">
@@ -105,10 +159,12 @@ console.log(user, "user");
         />
       )}
 
-      <div className={cn(
-        "bg-white text-blue-900 w-64 shadow-lg flex flex-col z-50",
-        "fixed h-full overflow-hidden"
-      )}>
+      <div
+        className={cn(
+          "bg-white text-blue-900 w-64 shadow-lg flex flex-col z-50",
+          "fixed h-full overflow-hidden"
+        )}
+      >
         <div className="flex items-center justify-between px-4 py-4">
           <div className="flex items-center">
             <GesticarmaLogo className="w-8 h-8 mr-2" />
@@ -158,60 +214,138 @@ console.log(user, "user");
         </div>
 
         {/* ACCUEIL */}
-        <div className="text-xs uppercase px-4 pt-4 pb-1 text-gray-700 tracking-widest">— ACCUEIL</div>
+        <div className="text-xs uppercase px-4 pt-4 pb-1 text-gray-700 tracking-widest">
+          — ACCUEIL
+        </div>
         <div className="px-2">
           {user.role === "admin" && (
-            <SideItem icon={Home} label="Accueil" path="/AdminAccueil" active={isActive("/AdminAccueil")} />
+            <SideItem
+              icon={Home}
+              label="Accueil"
+              path="/AdminAccueil"
+              active={isActive("/AdminAccueil")}
+            />
           )}
           {user.role === "employee" && (
-            <SideItem icon={Home} label="Accueil" path="/employeeaccueil" active={isActive("/employeeaccueil")} />
+            <SideItem
+              icon={Home}
+              label="Accueil"
+              path="/employeeaccueil"
+              active={isActive("/employeeaccueil")}
+            />
           )}
           {user.role === "technicien" && (
-            <SideItem icon={Home} label="Accueil" path="/techaccueil" active={isActive("/techaccueil")} />
+            <SideItem
+              icon={Home}
+              label="Accueil"
+              path="/techaccueil"
+              active={isActive("/techaccueil")}
+            />
           )}
         </div>
 
         <div className="px-2">
           {user.role === "admin" && (
             <>
-              <div className="text-xs uppercase px-2 pt-3 pb-2 text-gray-700 tracking-widest">— UTILISATEURS</div>
-              <SideItem icon={Users} label="Employés" path="/employes" active={isActive("/employes")} />
-              <SideItem icon={Wrench} label="Techniciens" path="/techniciens" active={isActive("/techniciens")} />
+              <div className="text-xs uppercase px-2 pt-3 pb-2 text-gray-700 tracking-widest">
+                — UTILISATEURS
+              </div>
+              <SideItem
+                icon={Users}
+                label="Employés"
+                path="/employes"
+                active={isActive("/employes")}
+              />
+              <SideItem
+                icon={Wrench}
+                label="Techniciens"
+                path="/techniciens"
+                active={isActive("/techniciens")}
+              />
             </>
           )}
 
           {(user.role === "admin" || user.role === "technicien") && (
             <>
-              <div className="text-xs uppercase px-2 pt-4 pb-2 text-gray-700 tracking-widest">— PARC DE VÉHICULES</div>
-              <SideItem icon={Car} label="Véhicules" path="/vehicules" active={isActive("/vehicules")} />
+              <div className="text-xs uppercase px-2 pt-4 pb-2 text-gray-700 tracking-widest">
+                — PARC DE VÉHICULES
+              </div>
+              <SideItem
+                icon={Car}
+                label="Véhicules"
+                path="/vehicules"
+                active={isActive("/vehicules")}
+              />
             </>
           )}
 
           {(user.role === "admin" || user.role === "technicien") && (
             <>
-              <div className="text-xs uppercase px-2 pt-4 pb-2 text-gray-700 tracking-widest">— INTERVENTIONS</div>
-              <SideItem icon={Wrench} label="Interne" path="/interventions/interne" active={isActive("/interventions/interne")} />
-              <SideItem icon={Layers} label="Externe" path="/interventions/externe" active={isActive("/interventions/externe")} />
-              <SideItem icon={Box} label="Fournitures" path="/fournitures" active={isActive("/fournitures")} />
+              <div className="text-xs uppercase px-2 pt-4 pb-2 text-gray-700 tracking-widest">
+                — INTERVENTIONS
+              </div>
+              <SideItem
+                icon={Wrench}
+                label="Interne"
+                path="/interventions/interne"
+                active={isActive("/interventions/interne")}
+              />
+              <SideItem
+                icon={Layers}
+                label="Externe"
+                path="/interventions/externe"
+                active={isActive("/interventions/externe")}
+              />
+              <SideItem
+                icon={Box}
+                label="Fournitures"
+                path="/fournitures"
+                active={isActive("/fournitures")}
+              />
             </>
           )}
 
-          {(user.role === "admin" || user.role === "employee" || user.role === "technicien") && (
+          {(user.role === "admin" ||
+            user.role === "employee" ||
+            user.role === "technicien") && (
             <>
-              <div className="text-xs uppercase px-2 pt-4 pb-2 text-gray-700 tracking-widest">— MISSIONS</div>
-              <SideItem icon={ClipboardList} label="Missions" path="/missions" active={isActive("/missions")} />
-              <SideItem icon={MapPin} label="Plan" path="/plan" active={isActive("/plan")} />
+              <div className="text-xs uppercase px-2 pt-4 pb-2 text-gray-700 tracking-widest">
+                — MISSIONS
+              </div>
+              <SideItem
+                icon={ClipboardList}
+                label="Missions"
+                path="/missions"
+                active={isActive("/missions")}
+              />
+              <SideItem
+                icon={MapPin}
+                label="Plan"
+                path="/plan"
+                active={isActive("/plan")}
+              />
             </>
           )}
         </div>
       </div>
 
       <div className="flex-1 flex flex-col bg-gray-50 ml-64">
-        <div className="flex justify-end items-center px-4 py-4 border-b" style={{ backgroundColor: '#1E40AF' }}>
+        <div
+          className="flex justify-end items-center px-4 py-4 border-b"
+          style={{ backgroundColor: "#1E40AF" }}
+        >
           <div className="flex items-center space-x-4">
             <Tooltip content="Notifications">
-              <Link to="notifications">
-                <Bell className="w-5 h-5 text-white" />
+              <Link to="/notifications" onClick={handleViewNotifications}>
+                <div className="relative">
+                  <Bell className="w-5 h-5 text-white" />
+                  {notificationCount > 0 && (
+                    <>
+                      <span className="absolute top-0 right-0 inline-flex w-2 h-2 bg-red-500 rounded-full animate-ping" />
+                      <span className="absolute top-0 right-0 inline-flex w-2 h-2 bg-red-500 rounded-full" />
+                    </>
+                  )}
+                </div>
               </Link>
             </Tooltip>
             <Tooltip content="Compte utilisateur">
@@ -229,7 +363,11 @@ console.log(user, "user");
         </div>
 
         {/* Breadcrumb + Contenu */}
-        <Breadcrumb currentPage={currentPage.charAt(0).toUpperCase() + currentPage.slice(1)} />
+        <Breadcrumb
+          currentPage={
+            currentPage.charAt(0).toUpperCase() + currentPage.slice(1)
+          }
+        />
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>

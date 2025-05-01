@@ -6,7 +6,7 @@ const missionSchema = new mongoose.Schema(
     description: { type: String, required: true },
     statut: {
       type: String,
-      enum: ["en attente", "en cours", "terminée"],
+      enum: ["en attente", "en cours", "terminée","refuser"],
       default: "en attente",
     },
     priority: {
@@ -18,8 +18,8 @@ const missionSchema = new mongoose.Schema(
     dateDebut: { type: Date, required: true },
     dateFin: { type: Date },
  
-    kilometrageDebut: { type: Number },
-    kilometrageFin: { type: Number },
+    // kilometrageDebut: { type: Number },
+    // kilometrageFin: { type: Number },
     vehicule: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vehicule",
@@ -32,11 +32,11 @@ const missionSchema = new mongoose.Schema(
     },
     notes: { type: String, required: true },
    
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+    // createdBy: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
     
   },
   { timestamps: true }

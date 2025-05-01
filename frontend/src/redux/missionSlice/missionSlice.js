@@ -38,10 +38,15 @@ export const getMissions = createAsyncThunk(
 );
 
 export const getMissionsByUserId = createAsyncThunk(
-  'missions/getMissionsByUserId',
+  "missions/getMissionsByUserId",
   async (userId) => {
-      const response = await axios.get(`/api/missions/${userId}`); // Appel API pour récupérer les missions
-      return response.data; // Retourner les données de mission
+    const response = await axios.get(
+      `http://localhost:5000/api/missions/getMissionsByUserId`,
+      {
+        params: { userId },
+      }
+    );
+    return response.data;
   }
 );
 
@@ -67,6 +72,22 @@ export const updateMission = createAsyncThunk(
   }
 );
 
+export const updateMissionStatut = createAsyncThunk(
+  "missions/updateMissionStatut",
+  async ({ missionId, statut, raisonRefus = "" }, thunkAPI) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/missions/updateMissionStatut`,
+        { statut, raisonRefus },
+        { params: { missionId } }
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 // 📌 Supprimer une mission (DELETE)
 export const deleteMission = createAsyncThunk(
   "missions/deleteMission",
@@ -86,6 +107,7 @@ const missionSlice = createSlice({
   name: "missions",
   initialState: {
     listMission: [],
+    listMissionByUserId: [],
     loading: false,
     error: null,
     updatedMission: null,
@@ -123,7 +145,7 @@ const missionSlice = createSlice({
     })
     .addCase(getMissionsByUserId.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.missions = action.payload; // Mettre les missions récupérées dans l'état
+        state.listMission = action.payload; // Mettre les missions récupérées dans l'état
     })
     .addCase(getMissionsByUserId.rejected, (state, action) => {
         state.status = 'failed';

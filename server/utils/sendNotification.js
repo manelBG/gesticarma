@@ -1,10 +1,10 @@
-import Notification from '../models/Notification.js';
+import Notification from "../models/Notification.js";
 
 export const sendNotification = async (destinataireId, type, message) => {
   try {
     const notification = new Notification({
       destinataireId,
-      type,
+      type: "mission",
       message,
     });
     await notification.save();
