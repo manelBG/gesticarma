@@ -105,7 +105,13 @@ const ListeInterventionsInternes = () => {
                     </h3>
 
                     <p className="text-sm text-gray-600">
-                      <strong>Technicien:</strong>{" "}
+                      {
+                        intervention?.technicien?.role === "admin" ? 
+                          <strong>Admin:</strong>
+                        : 
+                          <strong>Technicien:</strong>
+                        
+                    }
                       {intervention.technicien
                         ? intervention.technicien.role === "admin"
                           ? intervention.technicien.name
