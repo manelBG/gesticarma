@@ -73,7 +73,8 @@ const ListeInterventionsInternes = () => {
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
           Interventions Internes
         </h2>
-        {storedUser?.role === "technicien" && (
+        {(storedUser?.role === "technicien" ||
+          storedUser?.role === "admin") && (
           <div className="flex justify-end mb-4">
             <a
               href="/intervention/ajouter"
@@ -83,6 +84,7 @@ const ListeInterventionsInternes = () => {
             </a>
           </div>
         )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {Array.isArray(listIntervention) && listIntervention.length > 0 ? (
             listIntervention
@@ -105,7 +107,7 @@ const ListeInterventionsInternes = () => {
                     <p className="text-sm text-gray-600">
                       <strong>Technicien:</strong>{" "}
                       {intervention.technicien
-                        ? intervention.technicien.prenom
+                        ? intervention.technicien.name
                         : "Non assigné"}
                     </p>
 
@@ -138,23 +140,24 @@ const ListeInterventionsInternes = () => {
                     </p>
 
                     {/* Edit button */}
-                    {storedUser?.role === "technicien" && (
-                      <>
-                        <button
-                          onClick={() => handleEditClick(intervention)}
-                          className="bg-yellow-500 text-white px-4 py-2 rounded-full mt-4 hover:bg-yellow-600"
-                        >
-                          Modifier
-                        </button>
+                    {storedUser?.role === "technicien" ||
+                      (storedUser?.role === "admin" && (
+                        <>
+                          <button
+                            onClick={() => handleEditClick(intervention)}
+                            className="bg-yellow-500 text-white px-4 py-2 rounded-full mt-4 hover:bg-yellow-600"
+                          >
+                            Modifier
+                          </button>
 
-                        <button
-                          className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
-                          onClick={() => handleDelete(intervention._id)}
-                        >
-                          Supprimer
-                        </button>
-                      </>
-                    )}
+                          <button
+                            className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
+                            onClick={() => handleDelete(intervention._id)}
+                          >
+                            Supprimer
+                          </button>
+                        </>
+                      ))}
                   </div>
                 </div>
               ))

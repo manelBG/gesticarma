@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { createInterventionExterne } from "../redux/interventionexterneSlice/interventionexterneSlice";
+import {
+  createInterventionExterne,
+  getInterventionsExternes,
+} from "../redux/interventionexterneSlice/interventionexterneSlice";
 import { getVehicules } from "../redux/vehiculeSlice/vehiculeSlice";
 import { getPrestataires } from "../redux/prestataireSlice/prestataireSlice"; // Si tu as une liste de prestataires
 
@@ -22,16 +25,22 @@ const AjoutInterventionExterne = () => {
     factureNumero: "",
     etat: "en attente", // Default state
   });
-
+  console.log(interventionExterne, "interventionExterne");
   const { listVehicule } = useSelector((state) => state.vehicules);
-  const { listPrestataire = [] } = useSelector((state) => state.prestataire || {});
- // Liste des prestataires
+  const { prestataires = [] } = useSelector((state) => state.prestataire || {});
+console.log(prestataires, "listPrestataire");
+  // Liste des prestataires
 
   useEffect(() => {
     dispatch(getVehicules());
     dispatch(getPrestataires()); // Charger les prestataires
   }, [dispatch]);
 
+  // const { prestataires } = useSelector((state) => state.prestataire);
+
+  useEffect(() => {
+    dispatch(getPrestataires());
+  }, [dispatch]);
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -64,11 +73,15 @@ const AjoutInterventionExterne = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const resultAction = await dispatch(createInterventionExterne(interventionExterne));
+      const resultAction = await dispatch(
+        createInterventionExterne(interventionExterne)
+      );
       if (createInterventionExterne.fulfilled.match(resultAction)) {
-        navigate("/interventions/externes"); // Page de la liste des interventions externes
+        navigate("/interventions/externe"); // Page de la liste des interventions externes
       } else {
-        setError(resultAction.payload || "Erreur lors de l'ajout de l'intervention.");
+        setError(
+          resultAction.payload || "Erreur lors de l'ajout de l'intervention."
+        );
       }
     } catch (err) {
       setError("Une erreur est survenue. Veuillez réessayer plus tard.");
@@ -86,7 +99,9 @@ const AjoutInterventionExterne = () => {
       <form onSubmit={handleSubmit}>
         {/* Description */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">Description</label>
+          <label className="block text-gray-700 font-semibold mb-2">
+            Description
+          </label>
           <textarea
             name="description"
             value={interventionExterne.description}
@@ -98,7 +113,9 @@ const AjoutInterventionExterne = () => {
 
         {/* Date Début */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">Date de Début</label>
+          <label className="block text-gray-700 font-semibold mb-2">
+            Date de Début
+          </label>
           <input
             type="date"
             name="dateDebut"
@@ -111,7 +128,9 @@ const AjoutInterventionExterne = () => {
 
         {/* Date Fin */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">Date de Fin</label>
+          <label className="block text-gray-700 font-semibold mb-2">
+            Date de Fin
+          </label>
           <input
             type="date"
             name="dateFin"
@@ -124,7 +143,9 @@ const AjoutInterventionExterne = () => {
 
         {/* Véhicule */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">Véhicule</label>
+          <label className="block text-gray-700 font-semibold mb-2">
+            Véhicule
+          </label>
           <select
             name="vehicule"
             value={interventionExterne.vehicule}
@@ -133,26 +154,35 @@ const AjoutInterventionExterne = () => {
             required
           >
             <option value="">Sélectionner un véhicule</option>
-            {listVehicule.map((vehicule) => (
-              <option key={vehicule._id} value={vehicule._id}>
-                {vehicule.marque} {vehicule.modele}
-              </option>
-            ))}
+            {listVehicule
+              .filter(
+                (vehicule) =>
+                  vehicule.statut === "Disponible" ||
+                  vehicule._id === interventionExterne.vehicule
+              )
+              .map((vehicule) => (
+                <option key={vehicule._id} value={vehicule._id}>
+                  {vehicule.marque} {vehicule.modele} ({vehicule.statut})
+                </option>
+              ))}
           </select>
         </div>
 
         {/* Prestataire */}
+        {/* Prestataire */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">Prestataire</label>
+          <label className="block text-gray-700 font-semibold mb-2">
+            Prestataire
+          </label>
           <select
-            name="prestataire"
-            value={interventionExterne.prestataire}
-            onChange={handleChange}
+            name="prestataire" // Important de lier le nom à l'état
+            value={interventionExterne.prestataire} // Liaison avec l'état
+            onChange={handleChange} // Utilisation de handleChange pour mettre à jour l'état
             className="w-full px-4 py-2 border border-gray-300 rounded-md"
             required
           >
             <option value="">Sélectionner un prestataire</option>
-            {listPrestataire.map((prestataire) => (
+            {prestataires.map((prestataire) => (
               <option key={prestataire._id} value={prestataire._id}>
                 {prestataire.nom}
               </option>
@@ -162,7 +192,9 @@ const AjoutInterventionExterne = () => {
 
         {/* Coût */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">Coût (TND)</label>
+          <label className="block text-gray-700 font-semibold mb-2">
+            Coût (TND)
+          </label>
           <input
             type="number"
             name="cout"
@@ -175,7 +207,9 @@ const AjoutInterventionExterne = () => {
 
         {/* Facture Numéro */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">Numéro de Facture</label>
+          <label className="block text-gray-700 font-semibold mb-2">
+            Numéro de Facture
+          </label>
           <input
             type="text"
             name="factureNumero"
@@ -187,7 +221,9 @@ const AjoutInterventionExterne = () => {
 
         {/* Statut */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">Statut</label>
+          <label className="block text-gray-700 font-semibold mb-2">
+            Statut
+          </label>
           <select
             name="etat"
             value={interventionExterne.etat}

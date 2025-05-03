@@ -18,11 +18,9 @@ const store = configureStore({
     employees: employeeReducer,
     techniciens: technicienReducer,
     missions: missionReducer,
-    interventionexternes: interventionexterneReducer,
-    prestataire: prestataireReducer,
+    interventionExternes: interventionexterneReducer,
+    prestataire: prestataireReducer, // Correctement ajouté
     notification: notificationReducer,
-
-
   },
 });
 

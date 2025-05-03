@@ -6,10 +6,16 @@ export const getPrestataires = createAsyncThunk(
   "prestataire/getPrestataires",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get("/api/prestataires");
+      // Correction de l'URL
+      const response = await axios.get(
+        "http://localhost:5000/api/prestataires/getAllPrestataires"
+      );
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message || "Erreur lors du chargement des prestataires");
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message ||
+          "Erreur lors du chargement des prestataires"
+      );
     }
   }
 );
@@ -20,7 +26,7 @@ const prestataireSlice = createSlice({
   initialState: {
     prestataires: [],
     loading: false,
-    error: null
+    error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -37,7 +43,7 @@ const prestataireSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
-  }
+  },
 });
 
 export default prestataireSlice.reducer;

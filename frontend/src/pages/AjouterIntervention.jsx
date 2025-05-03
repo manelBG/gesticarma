@@ -204,11 +204,17 @@ const AjoutIntervention = () => {
             required
           >
             <option value="">Sélectionner un véhicule</option>
-            {listVehicule.map((vehicule) => (
-              <option key={vehicule._id} value={vehicule._id}>
-                {vehicule.marque} {vehicule.modele}
-              </option>
-            ))}
+            {listVehicule
+              .filter(
+                (vehicule) =>
+                  vehicule.statut === "Disponible" ||
+                  vehicule._id === intervention.vehicule
+              )
+              .map((vehicule) => (
+                <option key={vehicule._id} value={vehicule._id}>
+                  {vehicule.marque} {vehicule.modele} ({vehicule.statut})
+                </option>
+              ))}
           </select>
         </div>
 

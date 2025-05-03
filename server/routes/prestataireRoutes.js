@@ -11,7 +11,7 @@ const router = express.Router();
 
 // 🔒 Routes protégées
 router.post('/', verifyToken, ajouterPrestataire);
-router.get('/', verifyToken, getAllPrestataires);
+router.get("/getAllPrestataires", getAllPrestataires);
 router.put('/:id', verifyToken, updatePrestataire);
 router.delete('/:id', verifyToken, deletePrestataire);
 

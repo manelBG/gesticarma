@@ -8,7 +8,7 @@ export const createInterventionExterne = createAsyncThunk(
   async (interventionExterneData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/interventionsExterne/createInterExterne",
+        "http://localhost:5000/api/interventions-externes/createinterventionsExterne",
         interventionExterneData
       );
       return response.data;
@@ -24,8 +24,8 @@ export const getInterventionsExternes = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-          "http://localhost:5000/api/interventions-externes/interventionsExterne"      
-             );
+        "http://localhost:5000/api/interventions-externes/allinterventionsExterne"
+      );
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -39,7 +39,7 @@ export const updateInterventionExterne = createAsyncThunk(
   async ({ interventionExterneId, updatedData }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/interventionsExterne/updateInterventionExterne?interventionid=${interventionExterneId}`,
+        `http://localhost:5000/api/interventions-externes/updateInterventionExterne/${interventionExterneId}`,
         updatedData
       );
       return response.data;
@@ -55,7 +55,7 @@ export const deleteInterventionExterne = createAsyncThunk(
   async (interventionExterneId, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/interventionsExterne/deleteInterventionExterne?interventionid=${interventionExterneId}`
+        `http://localhost:5000/api/interventions-externes/deleteInterventionExterne/${interventionExterneId}`
       );
       return response.data;
     } catch (err) {
