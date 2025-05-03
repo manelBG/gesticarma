@@ -73,7 +73,7 @@ export const getAllInterventions = async (req, res) => {
       })
       .populate({
         path: "technicien",
-        select: "name prenom", // sélectionner uniquement nom et prénom du technicien
+        select: "name prenom nom role", // sélectionner uniquement nom et prénom du technicien
       });
 
     res.status(200).json(interventions);

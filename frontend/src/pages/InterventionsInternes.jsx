@@ -107,7 +107,9 @@ const ListeInterventionsInternes = () => {
                     <p className="text-sm text-gray-600">
                       <strong>Technicien:</strong>{" "}
                       {intervention.technicien
-                        ? intervention.technicien.name
+                        ? intervention.technicien.role === "admin"
+                          ? intervention.technicien.name
+                          : `${intervention.technicien.nom} ${intervention.technicien.prenom}`
                         : "Non assigné"}
                     </p>
 
