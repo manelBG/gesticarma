@@ -114,7 +114,7 @@ const ListeInterventionsInternes = () => {
                     }
                       {intervention.technicien
                         ? intervention.technicien.role === "admin"
-                          ? intervention.technicien.name
+                          ? `${intervention.technicien.nom} ${intervention.technicien.prenom}`
                           : `${intervention.technicien.nom} ${intervention.technicien.prenom}`
                         : "Non assigné"}
                     </p>

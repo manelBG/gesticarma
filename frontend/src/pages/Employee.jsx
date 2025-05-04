@@ -50,7 +50,7 @@ const Employes = () => {
       setShowForm(false);
       dispatch(getEmployees());
     } catch (error) {
-      console.error("Erreur lors de l'ajout de l'employé", error);
+      console.error("Erreur lors de l'ajout de l'employé :", error);
     }
   };
 
@@ -66,6 +66,7 @@ const Employes = () => {
     }
   };
 
+  // Mise à jour d'un employé
   const handleUpdateEmploye = async (e) => {
     e.preventDefault();
     try {
@@ -78,7 +79,7 @@ const Employes = () => {
       setSelectedEmploye(null); // Fermer le formulaire après mise à jour
       dispatch(getEmployees()); // Recharger la liste des employés
     } catch (error) {
-      console.error("Erreur lors de la mise à jour", error);
+      console.error("Erreur lors de la mise à jour :", error);
     }
   };
 
@@ -93,6 +94,7 @@ const Employes = () => {
       genre: employe.genre,
     });
   };
+
   // Filtrage pour la recherche
   const filteredEmployes = listEmployee.filter((employe) => {
     const fullName = `${employe.nom} ${employe.prenom}`.toLowerCase();

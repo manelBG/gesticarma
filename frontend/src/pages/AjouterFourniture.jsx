@@ -71,7 +71,7 @@ console.log(fourniture, "fourniture");
 
   return (
     <div className="w-full max-w-3xl mx-auto p-8 bg-white shadow-md rounded-lg">
-      <h1 className="text-3xl font-bold mb-6 text-center">
+      <h1 className="text-3xl font-pacifico mb-6 text-center">
         Ajouter une Fourniture
       </h1>
 
@@ -246,7 +246,7 @@ console.log(fourniture, "fourniture");
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
+            className="bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-600"
           >
             Ajouter
           </button>
