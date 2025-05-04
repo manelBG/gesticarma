@@ -39,7 +39,7 @@ export const createInterventionExterne = async (req, res) => {
     });
 
     await newIntervention.save();
-    await Vehicule.findByIdAndUpdate(vehicule, { statut: "En maintenance" });
+    await Vehicule.findByIdAndUpdate(vehicule, { statut: "En panne" });
 
     res.status(201).json(newIntervention);
   } catch (error) {
@@ -52,6 +52,7 @@ export const getAllInterventionsExternes = async (req, res) => {
     // Populate pour les deux références : vehicule et prestataire
     const interventions = await InterventionExterne.find()
       .populate("vehicule")
+      .populate("technicien")
       .populate("prestataire");
     res.status(200).json(interventions);
   } catch (error) {

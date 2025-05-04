@@ -326,6 +326,18 @@ const ListeInterventionsExternes = () => {
                 className="p-4 bg-gray-200 rounded-xl shadow-md hover:shadow-lg transition duration-300 ease-in-out"
               >
                 <div className="flex flex-col">
+                  <p className="text-sm text-gray-600">
+                    {intervention?.technicien?.role === "admin" ? (
+                      <strong>Admin:</strong>
+                    ) : (
+                      <strong>Technicien:</strong>
+                    )}
+                    {intervention.technicien
+                      ? intervention.technicien.role === "admin"
+                        ? `${intervention.technicien.nom} ${intervention.technicien.prenom}`
+                        : `${intervention.technicien.nom} ${intervention.technicien.prenom}`
+                      : "Non assigné"}
+                  </p>
                   <h3 className="font-semibold text-xl text-gray-800">
                     Description: {intervention.description}
                   </h3>
@@ -350,20 +362,24 @@ const ListeInterventionsExternes = () => {
                     {new Date(intervention.dateFin).toLocaleDateString()}
                   </p>
                 </div>
-                <div>
-                  <button
-                    onClick={() => handleEditClick(intervention)}
-                    className="bg-yellow-500 text-white px-4 py-2 rounded-full mt-4 hover:bg-yellow-600"
-                  >
-                    Modifier
-                  </button>
-                  <button
-                    onClick={() => handleDelete(intervention._id)}
-                    className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
-                  >
-                    Supprimer
-                  </button>
-                </div>
+                {(storedUser.role === "admin" ||
+                  (storedUser.role === "technicien" &&
+                    storedUser._id === intervention.technicien?._id)) && (
+                  <div>
+                    <button
+                      onClick={() => handleEditClick(intervention)}
+                      className="bg-yellow-500 text-white px-4 py-2 rounded-full mt-4 hover:bg-yellow-600"
+                    >
+                      Modifier
+                    </button>
+                    <button
+                      onClick={() => handleDelete(intervention._id)}
+                      className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                )}
               </div>
             ))
           ) : (
