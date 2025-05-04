@@ -73,11 +73,9 @@ const NotificationsPage = () => {
 
         <div className="flex flex-col md:flex-row justify-center gap-8">
           {/* Urgent Notifications */}
-
-          {/* General Notifications */}
-          <div className="flex-1 bg-blue-100 border-l-8 border-blue-500 rounded-2xl shadow-lg p-8 min-h-[300px]">
-            <h2 className="text-2xl font-bold text-blue-800 mb-4 text-center">
-              ℹ️ Notifications Générales
+          <div className="flex-1 bg-red-100 border-l-8 border-red-500 rounded-2xl shadow-lg p-8 min-h-[300px]">
+            <h2 className="text-2xl font-bold text-red-700 mb-4 text-center">
+              ⚠️ Notifications Prioritaires
             </h2>
             {generales.length > 0 ? (
               [...generales].map((notif) => (
@@ -85,7 +83,7 @@ const NotificationsPage = () => {
                   key={notif._id}
                   className="bg-white p-4 rounded-lg shadow mb-4"
                 >
-                  <h3 className="font-semibold text-blue-700">
+                  <h3 className="font-semibold text-red-600">
                     {notif.sousType}
                   </h3>
                   <p className="text-sm text-gray-700 mt-1">{notif.message}</p>
@@ -96,10 +94,11 @@ const NotificationsPage = () => {
               ))
             ) : (
               <p className="text-gray-600 text-center">
-                Pas de notification générale.
+                Aucune notification urgente.
               </p>
             )}
           </div>
+          {/* General Notifications */}
         </div>
       </div>
     </div>

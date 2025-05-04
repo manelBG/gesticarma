@@ -170,7 +170,7 @@ export const getMissionsByUserId = async (req, res) => {
       })
       .populate({
         path: "employee",
-        select: "nom prenom", // Affiche uniquement le nom et le prénom
+        select: "nom prenom role", // Affiche uniquement le nom et le prénom
       });
 
     if (!missions || missions.length === 0) {
