@@ -3,6 +3,8 @@ import { ClipboardList, Calendar, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { getMissionsByUserId } from "../redux/missionSlice/missionSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function EmployeeAccueil() {
   const [greeting, setGreeting] = useState("");
@@ -10,7 +12,7 @@ export default function EmployeeAccueil() {
   const [missions, setMissions] = useState(0); // État pour les missions
   const [notifications, setNotifications] = useState([]); // État pour les notifications
   const { user, token } = useAuth();
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const getUserNotifications = async () => {
       const token = localStorage.getItem("token");
@@ -98,6 +100,13 @@ export default function EmployeeAccueil() {
 
     return () => clearInterval(timeInterval);
   }, []); // Cette dépendance vide permet de charger les données au premier rendu du composant
+  const { listMission, error, listMissionByUserId } = useSelector(
+    (state) => state.missions
+  );
+  useEffect(() => {
+    dispatch(getMissionsByUserId(user._id));
+  }, [dispatch]);
+  const missionCount = listMission?.length || 0;
 
   return (
     <div className="p-8 space-y-11">
@@ -123,9 +132,9 @@ export default function EmployeeAccueil() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <DashboardCard
             icon={ClipboardList}
-            label="Missions"
-            value={missions}
-            to="/missions"
+            label="Mission"
+            value={missionCount}
+            to="/missionCount"
           />
           <div className="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center space-y-2 text-blue-900">
             <div className="text-xl font-bold">{notifications.length}</div>

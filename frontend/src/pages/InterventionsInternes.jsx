@@ -146,8 +146,7 @@ const ListeInterventionsInternes = () => {
                     </p>
 
                     {/* Edit button */}
-                    {storedUser?.role === "technicien" ||
-                      (storedUser?.role === "admin" && (
+             
                         <>
                           <button
                             onClick={() => handleEditClick(intervention)}
@@ -163,7 +162,7 @@ const ListeInterventionsInternes = () => {
                             Supprimer
                           </button>
                         </>
-                      ))}
+                  
                   </div>
                 </div>
               ))

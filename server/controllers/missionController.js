@@ -122,7 +122,15 @@ export const getMissions = async (req, res) => {
 export const getMissionsByUserId = async (req, res) => {
   try {
     const userId = req.query.userId; // Récupérer l'userId depuis les paramètres de la route
-    const missions = await Mission.find({ employee: userId }); // Trouver toutes les missions créées par cet employé
+    const missions = await Mission.find({ employee: userId })
+      .populate({
+        path: "vehicule",
+        select: "marque modele", // Affiche uniquement la marque et le modèle
+      })
+      .populate({
+        path: "employee",
+        select: "nom prenom", // Affiche uniquement le nom et le prénom
+      });
 
     if (!missions || missions.length === 0) {
       return res

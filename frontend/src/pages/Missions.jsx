@@ -60,7 +60,7 @@ const handleSwitchStatut = async (missionId, statut, raisonRefus = "") => {
         Liste des Missions
       </h1>
 
-      {error && <div className="text-red-500 mb-4">{error}</div>}
+      {/* {error && <div className="text-red-500 mb-4">{error}</div>} */}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {["en attente", "en cours", "terminée"].map((statut) => {
@@ -84,6 +84,13 @@ const handleSwitchStatut = async (missionId, statut, raisonRefus = "") => {
                       <h3 className="text-lg font-semibold text-gray-800">
                         {mission.missionName}
                       </h3>
+                      <p className="text-sm text-gray-600">
+                        Nom et prenom:{mission.employee?.nom}{" "}
+                        {mission.employee?.prenom}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Role:{mission.employee?.role}
+                      </p>
                       <p className="text-sm text-gray-600">
                         Véhicule: {mission.vehicule?.marque} :{" "}
                         {mission.vehicule?.immatriculation}
