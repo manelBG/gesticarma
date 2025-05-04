@@ -4,27 +4,27 @@ import mongoose from 'mongoose';
 const notificationSchema = new mongoose.Schema({
   expediteurId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
   },
   destinataireId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     // required: true,
   },
   type: {
     type: String,
-    enum: ['intervention', 'mission'],
+    enum: ["intervention", "mission"],
     // required: true,
   },
   sousType: {
     type: String,
     enum: [
-      'urgente',
-      'normale',
-      'creation',
-      'acceptation',
-      'refus',
-      'modification',
+      "urgente",
+      "normale",
+      "creation",
+      "acceptation",
+      "refus",
+      "modification",
     ],
   },
   message: {

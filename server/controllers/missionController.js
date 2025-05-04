@@ -4,18 +4,58 @@ import Vehicule from "../models/Vehicule.js";
 import Notification from "../models/Notification.js";
 import { sendNotification } from "../index.js";
 // ✔️ Créer une mission et envoyer une notification au directeur
+// export const createMission = async (req, res) => {
+//   try {
+//     const mission = new Mission(req.body);
+//     await mission.save();
+//     // ✅ Notification au directeur
+//     const directeur = await User.findOne({ role: "directeur" });
+//     if (directeur) {
+//       await sendNotification(
+//         directeur._id,
+//         "mission",
+//         `Une nouvelle mission a été créée par l'employé ${mission.employee} pour le véhicule ${mission.vehicule}.`
+//       );
+//     }
+
+//     // ✅ Mise à jour du statut du véhicule
+//     await Vehicule.findByIdAndUpdate(mission.vehicule, {
+//       statut: "En mission",
+//     });
+
+//     res.status(201).json(mission);
+//   } catch (err) {
+//     res.status(400).json({ message: err.message });
+//   }
+// };
+
 export const createMission = async (req, res) => {
   try {
     const mission = new Mission(req.body);
     await mission.save();
-    // ✅ Notification au directeur
-    const directeur = await User.findOne({ role: "directeur" });
-    if (directeur) {
-      await sendNotification(
-        directeur._id,
-        "mission",
-        `Une nouvelle mission a été créée par l'employé ${mission.employee} pour le véhicule ${mission.vehicule}.`
-      );
+
+    // Récupérer les données détaillées de la mission (avec l'employé)
+    const fullMission = await Mission.findById(mission._id).populate(
+      "employee"
+    );
+
+    // ✅ Notification aux admins
+    const admins = await User.find({ role: "admin" });
+
+    const message = `Une nouvelle mission "${fullMission.missionName}" a été créée par ${fullMission.employee.nom} ${fullMission.employee.prenom}.`;
+
+    for (const admin of admins) {
+      const newNotification = await Notification.create({
+        destinataireId: admin._id,
+        type: "mission",
+        sousType: "creation",
+        message,
+        dateCreation: new Date(),
+        lue: false,
+      });
+
+      // Envoi temps réel via Socket.IO
+      sendNotification(admin._id.toString(), newNotification);
     }
 
     // ✅ Mise à jour du statut du véhicule
@@ -25,6 +65,7 @@ export const createMission = async (req, res) => {
 
     res.status(201).json(mission);
   } catch (err) {
+    console.error("Erreur lors de la création de mission :", err);
     res.status(400).json({ message: err.message });
   }
 };
@@ -177,12 +218,6 @@ export const updateMissionStatut = async (req, res) => {
           ? `${messageBase} Raison: ${raisonRefus}`
           : messageBase;
 
-      await Notification.create({
-        destinataireId,
-        type: "mission",
-        sousType: statut === "en cours" ? "acceptation" : "refus",
-        message,
-      });
       const newNotification = await Notification.create({
         destinataireId,
         type: "mission",

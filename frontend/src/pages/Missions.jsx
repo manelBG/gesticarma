@@ -15,17 +15,28 @@ const ListeMissions = () => {
     (state) => state.missions
   );
 
-const handleSwitchStatut = async (missionId, statut, raisonRefus = "") => {
-  const resultAction = await dispatch(
-    updateMissionStatut({ missionId, statut, raisonRefus })
-  );
+const [loading, setLoading] = useState(false);
 
-  if (updateMissionStatut.fulfilled.match(resultAction)) {
-    if (user?.role === "admin") {
-      dispatch(getMissions());
-    } else {
-      dispatch(getMissionsByUserId(user._id));
+const handleSwitchStatut = async (missionId, statut, raisonRefus = "") => {
+  if (loading) return; // Prevents dispatching if already in progress
+  setLoading(true);
+
+  try {
+    const resultAction = await dispatch(
+      updateMissionStatut({ missionId, statut, raisonRefus })
+    );
+
+    if (updateMissionStatut.fulfilled.match(resultAction)) {
+      if (user?.role === "admin") {
+        dispatch(getMissions());
+      } else {
+        dispatch(getMissionsByUserId(user._id));
+      }
     }
+  } catch (error) {
+    console.error("Error updating mission status:", error);
+  } finally {
+    setLoading(false); // Reset loading state after operation is complete
   }
 };
 

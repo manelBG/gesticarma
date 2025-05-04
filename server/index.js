@@ -60,12 +60,10 @@ if (!MONGODB_URL || !JWT_KEY || !VITE_API_BASE_URL) {
   console.error("Error: Required environment variables are missing.");
   process.exit(1); // Stop the application if any required variable is missing
 }
-
 // Connect to MongoDB before starting the server
 connectToDatabase()
   .then(() => {
     // If successful, start the Express server
-
     // CORS configuration for the Express app
     const allowedOrigins = [VITE_API_BASE_URL, "http://localhost:5173"];
     const corsOptions = {
@@ -102,7 +100,6 @@ connectToDatabase()
     app.use("/api/users", userRoutes);
     app.use("/api/employees", employeRoutes);
     app.use("/api/techniciens", technicienRoutes);
-
     // Clean up old notifications every 24 hours
     setInterval(async () => {
       const cutoffDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // 30 days
