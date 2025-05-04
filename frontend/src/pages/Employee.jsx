@@ -55,14 +55,33 @@ const Employes = () => {
   };
 
   // Suppression d'un employé
-  const handleDelete = async (employeeId) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet employé ?")) {
-      try {
-        await dispatch(deleteEmployee(employeeId));
-        dispatch(getEmployees());
-      } catch (error) {
-        console.error("Erreur lors de la suppression :", error);
-      }
+  // const handleDelete = async (employeeId) => {
+  //   if (window.confirm("Êtes-vous sûr de vouloir supprimer cet employé ?")) {
+  //     try {
+  //       await dispatch(deleteEmployee(employeeId));
+  //       dispatch(getEmployees());
+  //     } catch (error) {
+  //       console.error("Erreur lors de la suppression :", error);
+  //     }
+  //   }
+  // };
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+
+  const handleDeleteClick = (employeeId) => {
+    setSelectedEmployeeId(employeeId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await dispatch(deleteEmployee(selectedEmployeeId));
+      dispatch(getEmployees());
+      setShowDeleteModal(false);
+      setSelectedEmployeeId(null);
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
     }
   };
 
@@ -299,7 +318,7 @@ const Employes = () => {
                       </button>
                       <button
                         className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
-                        onClick={() => handleDelete(employe._id)}
+                        onClick={() => handleDeleteClick(employe._id)}
                       >
                         Supprimer
                       </button>
@@ -445,6 +464,33 @@ const Employes = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">
+              Confirmation de suppression
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Êtes-vous sûr de vouloir supprimer cet employé ? Cette action est
+              irréversible.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Confirmer
+              </button>
+            </div>
           </div>
         </div>
       )}

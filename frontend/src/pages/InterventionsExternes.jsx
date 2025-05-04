@@ -73,19 +73,36 @@ const ListeInterventionsExternes = () => {
       [name]: value,
     }));
   };
-  const handleDelete = async (interventionId) => {
-    if (
-      window.confirm(
-        "Êtes-vous sûr de vouloir supprimer cette intervention externe ?"
-      )
-    ) {
-      try {
-        await dispatch(deleteInterventionExterne(interventionId));
-        // After deletion, re-fetch the list of interventions externes
-        dispatch(getInterventionsExternes());
-      } catch (error) {
-        console.error("Erreur lors de la suppression :", error);
-      }
+  // const handleDelete = async (interventionId) => {
+  //   if (
+  //     window.confirm(
+  //       "Êtes-vous sûr de vouloir supprimer cette intervention externe ?"
+  //     )
+  //   ) {
+  //     try {
+  //       await dispatch(deleteInterventionExterne(interventionId));
+  //       // After deletion, re-fetch the list of interventions externes
+  //       dispatch(getInterventionsExternes());
+  //     } catch (error) {
+  //       console.error("Erreur lors de la suppression :", error);
+  //     }
+  //   }
+  // };
+  const [selectedInterventionId, setSelectedInterventionId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const handleDeleteClick = (interventionId) => {
+    setSelectedInterventionId(interventionId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await dispatch(deleteInterventionExterne(selectedInterventionId));
+      dispatch(getInterventionsExternes());
+      setShowDeleteModal(false);
+      setSelectedInterventionId(null);
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
     }
   };
 
@@ -389,7 +406,7 @@ const ListeInterventionsExternes = () => {
                       Modifier
                     </button>
                     <button
-                      onClick={() => handleDelete(intervention._id)}
+                      onClick={() => handleDeleteClick(intervention._id)}
                       className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
                     >
                       Supprimer
@@ -403,6 +420,32 @@ const ListeInterventionsExternes = () => {
           )}
         </div>
       </div>
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">
+              Confirmer la suppression
+            </h2>
+            <p className="mb-6">
+              Êtes-vous sûr de vouloir supprimer cette intervention externe ?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-full"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full"
+              >
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

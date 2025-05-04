@@ -65,19 +65,42 @@ const ListeFournituresGroupées = () => {
     LubrifiantFluide: "bg-cyan-100 border-cyan-300",
   };
 
-     const handleDelete = async (fournitureId) => {
-       if (
-         window.confirm("Êtes-vous sûr de vouloir supprimer ce fourniture ?")
-       ) {
-         try {
-           await dispatch(deleteFourniture(fournitureId));
-           // After deletion, re-fetch the list of vehicles
-           dispatch(getFournitures());
-         } catch (error) {
-           console.error("Erreur lors de la suppression :", error);
-         }
-       }
-     };
+  //  const handleDelete = async (fournitureId) => {
+  //    if (
+  //      window.confirm("Êtes-vous sûr de vouloir supprimer ce fourniture ?")
+  //    ) {
+  //      try {
+  //        await dispatch(deleteFourniture(fournitureId));
+  //        // After deletion, re-fetch the list of vehicles
+  //        dispatch(getFournitures());
+  //      } catch (error) {
+  //        console.error("Erreur lors de la suppression :", error);
+  //      }
+  //    }
+  //  };
+
+  // État local
+  const [selectedFournitureId, setSelectedFournitureId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  // Ouvre la modale
+  const handleDeleteClick = (fournitureId) => {
+    setSelectedFournitureId(fournitureId);
+    setShowDeleteModal(true);
+  };
+
+  // Confirme la suppression
+  const confirmDelete = async () => {
+    try {
+      await dispatch(deleteFourniture(selectedFournitureId));
+      dispatch(getFournitures());
+      setShowDeleteModal(false);
+      setSelectedFournitureId(null);
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
+    }
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto bg-white p-6 rounded-xl shadow-lg">
       <h1 className="text-4xl font-pacifico text-black mb-6 text-center">
@@ -165,7 +188,7 @@ const ListeFournituresGroupées = () => {
                         </button>
                         <button
                           className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
-                          onClick={() => handleDelete(fourniture._id)}
+                          onClick={() => handleDeleteClick(fourniture._id)}
                         >
                           Supprimer
                         </button>
@@ -355,6 +378,30 @@ const ListeFournituresGroupées = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded shadow-md text-center">
+            <h2 className="text-lg font-semibold mb-4">Confirmation</h2>
+            <p className="mb-4">
+              Êtes-vous sûr de vouloir supprimer cette fourniture ?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={confirmDelete}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+              >
+                Supprimer
+              </button>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+              >
+                Annuler
+              </button>
+            </div>
           </div>
         </div>
       )}

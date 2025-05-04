@@ -79,15 +79,34 @@ const Vehicules = () => {
     }
   };
 
-  const handleDelete = async (vehiculeId) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce véhicule ?")) {
-      try {
-        await dispatch(deleteVehicule(vehiculeId));
-        // After deletion, re-fetch the list of vehicles
-        dispatch(getVehicules());
-      } catch (error) {
-        console.error("Erreur lors de la suppression :", error);
-      }
+  // const handleDelete = async (vehiculeId) => {
+  //   if (window.confirm("Êtes-vous sûr de vouloir supprimer ce véhicule ?")) {
+  //     try {
+  //       await dispatch(deleteVehicule(vehiculeId));
+  //       // After deletion, re-fetch the list of vehicles
+  //       dispatch(getVehicules());
+  //     } catch (error) {
+  //       console.error("Erreur lors de la suppression :", error);
+  //     }
+  //   }
+  // };
+
+  const [selectedVehiculeId, setSelectedVehiculeId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDeleteClick = (vehiculeId) => {
+    setSelectedVehiculeId(vehiculeId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await dispatch(deleteVehicule(selectedVehiculeId));
+      dispatch(getVehicules());
+      setShowDeleteModal(false);
+      setSelectedVehiculeId(null);
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
     }
   };
 
@@ -280,19 +299,19 @@ const Vehicules = () => {
                       : "Non spécifiée"}
                   </td>
                   <td className="px-4 py-3 border-b">
-                    <div className="flex items-center gap-2 whitespace-nowrap"> 
+                    <div className="flex items-center gap-2 whitespace-nowrap">
                       <button
-                       className="bg-yellow-400 hover:bg-yellow-500 text-white py-1 px-3 rounded-full"
-                       onClick={() => handleEditClick(vehicule)}
+                        className="bg-yellow-400 hover:bg-yellow-500 text-white py-1 px-3 rounded-full"
+                        onClick={() => handleEditClick(vehicule)}
                       >
                         Modifier
                       </button>
 
                       <button
-                      className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
-                      onClick={() => handleDelete(vehicule._id)}
-                       >
-                      Supprimer
+                        className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
+                        onClick={() => handleDeleteClick(vehicule._id)}
+                      >
+                        Supprimer
                       </button>
                     </div>
                   </td>
@@ -460,6 +479,32 @@ const Vehicules = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">
+              Confirmer la suppression
+            </h2>
+            <p className="mb-6">
+              Êtes-vous sûr de vouloir supprimer ce véhicule ?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-full"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full"
+              >
+                Supprimer
+              </button>
+            </div>
           </div>
         </div>
       )}

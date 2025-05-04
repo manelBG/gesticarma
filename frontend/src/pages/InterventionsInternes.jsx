@@ -47,17 +47,36 @@ const ListeInterventionsInternes = () => {
     }
   };
 
-  const handleDelete = async (interventionId) => {
-    if (
-      window.confirm("Êtes-vous sûr de vouloir supprimer ce intervention ?")
-    ) {
-      try {
-        await dispatch(deleteIntervention(interventionId));
-        // After deletion, re-fetch the list of vehicles
-        dispatch(getInterventions());
-      } catch (error) {
-        console.error("Erreur lors de la suppression :", error);
-      }
+  // const handleDelete = async (interventionId) => {
+  //   if (
+  //     window.confirm("Êtes-vous sûr de vouloir supprimer ce intervention ?")
+  //   ) {
+  //     try {
+  //       await dispatch(deleteIntervention(interventionId));
+  //       // After deletion, re-fetch the list of vehicles
+  //       dispatch(getInterventions());
+  //     } catch (error) {
+  //       console.error("Erreur lors de la suppression :", error);
+  //     }
+  //   }
+  // };
+
+  const [selectedInterventionId, setSelectedInterventionId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDeleteClick = (interventionId) => {
+    setSelectedInterventionId(interventionId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await dispatch(deleteIntervention(selectedInterventionId));
+      dispatch(getInterventions());
+      setShowDeleteModal(false);
+      setSelectedInterventionId(null);
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
     }
   };
 
@@ -146,23 +165,22 @@ const ListeInterventionsInternes = () => {
                     </p>
 
                     {/* Edit button */}
-             
-                        <>
-                          <button
-                            onClick={() => handleEditClick(intervention)}
-                            className="bg-yellow-500 text-white px-4 py-2 rounded-full mt-4 hover:bg-yellow-600"
-                          >
-                            Modifier
-                          </button>
 
-                          <button
-                            className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
-                            onClick={() => handleDelete(intervention._id)}
-                          >
-                            Supprimer
-                          </button>
-                        </>
-                  
+                    <>
+                      <button
+                        onClick={() => handleEditClick(intervention)}
+                        className="bg-yellow-500 text-white px-4 py-2 rounded-full mt-4 hover:bg-yellow-600"
+                      >
+                        Modifier
+                      </button>
+
+                      <button
+                        className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
+                        onClick={() => handleDeleteClick(intervention._id)}
+                      >
+                        Supprimer
+                      </button>
+                    </>
                   </div>
                 </div>
               ))
@@ -293,6 +311,32 @@ const ListeInterventionsInternes = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">
+              Confirmer la suppression
+            </h2>
+            <p className="mb-6">
+              Êtes-vous sûr de vouloir supprimer cette intervention ?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-full"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full"
+              >
+                Supprimer
+              </button>
+            </div>
           </div>
         </div>
       )}

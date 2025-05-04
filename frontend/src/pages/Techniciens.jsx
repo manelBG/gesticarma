@@ -39,17 +39,35 @@ const Techniciens = () => {
  
 
   // Suppression d'un employé
-    const handleDelete = async (technicienId) => {
-      if (window.confirm("Êtes-vous sûr de vouloir supprimer cet technicien ?")) {
-        try {
-          await dispatch(deleteTechnicien(technicienId));
-          dispatch(getTechniciens());
-        } catch (error) {
-          console.error("Erreur lors de la suppression :", error);
-        }
-      }
-    };
+    // const handleDelete = async (technicienId) => {
+    //   if (window.confirm("Êtes-vous sûr de vouloir supprimer cet technicien ?")) {
+    //     try {
+    //       await dispatch(deleteTechnicien(technicienId));
+    //       dispatch(getTechniciens());
+    //     } catch (error) {
+    //       console.error("Erreur lors de la suppression :", error);
+    //     }
+    //   }
+    // };
   
+
+  const [selectedTechnicienId, setSelectedTechnicienId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+const handleDeleteClick = (technicienId) => {
+  setSelectedTechnicienId(technicienId);
+  setShowDeleteModal(true);
+};
+
+const confirmDelete = async () => {
+  try {
+    await dispatch(deleteTechnicien(selectedTechnicienId));
+    dispatch(getTechniciens());
+    setShowDeleteModal(false);
+    setSelectedTechnicienId(null);
+  } catch (error) {
+    console.error("Erreur lors de la suppression :", error);
+  }
+};
 
   
   const handleAddTechnicien = async (e) => {
@@ -150,7 +168,9 @@ const Techniciens = () => {
               placeholder="Nom"
               className="p-2 border rounded"
               value={newTechnicien.nom}
-              onChange={(e) => setNewTechnicien({ ...newTechnicien, nom: e.target.value })}
+              onChange={(e) =>
+                setNewTechnicien({ ...newTechnicien, nom: e.target.value })
+              }
               required
             />
             <input
@@ -158,7 +178,9 @@ const Techniciens = () => {
               placeholder="Prénom"
               className="p-2 border rounded"
               value={newTechnicien.prenom}
-              onChange={(e) => setNewTechnicien({ ...newTechnicien, prenom: e.target.value })}
+              onChange={(e) =>
+                setNewTechnicien({ ...newTechnicien, prenom: e.target.value })
+              }
               required
             />
             <input
@@ -166,7 +188,9 @@ const Techniciens = () => {
               placeholder="Email"
               className="p-2 border rounded"
               value={newTechnicien.email}
-              onChange={(e) => setNewTechnicien({ ...newTechnicien, email: e.target.value })}
+              onChange={(e) =>
+                setNewTechnicien({ ...newTechnicien, email: e.target.value })
+              }
               required
             />
             <input
@@ -174,7 +198,12 @@ const Techniciens = () => {
               placeholder="Téléphone"
               className="p-2 border rounded"
               value={newTechnicien.telephone}
-              onChange={(e) => setNewTechnicien({ ...newTechnicien, telephone: e.target.value })}
+              onChange={(e) =>
+                setNewTechnicien({
+                  ...newTechnicien,
+                  telephone: e.target.value,
+                })
+              }
               required
             />
           </div>
@@ -203,7 +232,10 @@ const Techniciens = () => {
           <tbody>
             {filteredTechniciens.length > 0 ? (
               filteredTechniciens.map((technicien, index) => (
-                <tr key={technicien._id} className="hover:bg-blue-50 transition duration-200">
+                <tr
+                  key={technicien._id}
+                  className="hover:bg-blue-50 transition duration-200"
+                >
                   <td className="px-4 py-3 border-b">{index + 1}</td>
                   <td className="px-4 py-3 border-b">{technicien.nom}</td>
                   <td className="px-4 py-3 border-b">{technicien.prenom}</td>
@@ -219,12 +251,12 @@ const Techniciens = () => {
                       <button
                         className="bg-yellow-400 hover:bg-yellow-500 text-white py-1 px-3 rounded-full"
                         onClick={() => {
-                         setSelectedTechnicien(technicien);
-                         setFormData({
-                          nom: technicien.nom,
-                          prenom: technicien.prenom,
-                          email: technicien.email,
-                          telephone: technicien.telephone,
+                          setSelectedTechnicien(technicien);
+                          setFormData({
+                            nom: technicien.nom,
+                            prenom: technicien.prenom,
+                            email: technicien.email,
+                            telephone: technicien.telephone,
                           });
                         }}
                       >
@@ -232,7 +264,7 @@ const Techniciens = () => {
                       </button>
                       <button
                         className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
-                         onClick={() => handleDelete(technicien._id)}
+                        onClick={() => handleDeleteClick(technicien._id)}
                       >
                         Supprimer
                       </button>
@@ -252,117 +284,142 @@ const Techniciens = () => {
       </div>
 
       {/* Formulaire de mise à jour technicien (style moderne intégré) */}
-{selectedTechnicien && (
-  <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-    <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full mx-4">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">
-          Modifier le technicien
-        </h2>
-        <button
-          onClick={() => setSelectedTechnicien(null)}
-          className="text-gray-500 hover:text-gray-700"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
+      {selectedTechnicien && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full mx-4">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Modifier le technicien
+              </h2>
+              <button
+                onClick={() => setSelectedTechnicien(null)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
 
-      <form onSubmit={handleUpdateTechnicien} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nom
-            </label>
-            <input
-              type="text"
-              value={formData.nom}
-              onChange={(e) =>
-                setFormData({ ...formData, nom: e.target.value })
-              }
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              required
-            />
-          </div>
+            <form onSubmit={handleUpdateTechnicien} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nom
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.nom}
+                    onChange={(e) =>
+                      setFormData({ ...formData, nom: e.target.value })
+                    }
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    required
+                  />
+                </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Prénom
-            </label>
-            <input
-              type="text"
-              value={formData.prenom}
-              onChange={(e) =>
-                setFormData({ ...formData, prenom: e.target.value })
-              }
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              required
-            />
-          </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Prénom
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.prenom}
+                    onChange={(e) =>
+                      setFormData({ ...formData, prenom: e.target.value })
+                    }
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    required
+                  />
+                </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              required
-            />
-          </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    required
+                  />
+                </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Téléphone
-            </label>
-            <input
-              type="text"
-              value={formData.telephone}
-              onChange={(e) =>
-                setFormData({ ...formData, telephone: e.target.value })
-              }
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              required
-            />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Téléphone
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.telephone}
+                    onChange={(e) =>
+                      setFormData({ ...formData, telephone: e.target.value })
+                    }
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setSelectedTechnicien(null)}
+                  className="px-6 py-2 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400 font-medium transition"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 font-medium transition"
+                >
+                  Mettre à jour
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-
-        <div className="flex justify-end space-x-3 mt-6">
-          <button
-            type="button"
-            onClick={() => setSelectedTechnicien(null)}
-            className="px-6 py-2 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400 font-medium transition"
-          >
-            Annuler
-          </button>
-          <button
-            type="submit"
-            className="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 font-medium transition"
-          >
-            Mettre à jour
-          </button>
+      )}
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">
+              Confirmer la suppression
+            </h2>
+            <p className="mb-6">
+              Êtes-vous sûr de vouloir supprimer ce technicien ?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-full"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full"
+              >
+                Supprimer
+              </button>
+            </div>
+          </div>
         </div>
-      </form>
-    </div>
-  </div>
-)}
-
+      )}
     </div>
   );
 };
