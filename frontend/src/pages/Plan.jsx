@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 
 const PlanMissionForm = () => {
   const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
@@ -29,6 +29,7 @@ const PlanMissionForm = () => {
     priority: "",
     notes: "",
     statut: "en attente",
+    rapport: "",
   });
 
   console.log("formDatapan:", formData);
@@ -76,7 +77,7 @@ const PlanMissionForm = () => {
       // Do NOT send startTime and endTime separately
 
       // Do NOT send startTime and endTime separately
-
+      rapport: formData.rapport,
       vehicule: formData.vehicule,
       employee: storedUser._id, // connecté
       kilometrageDebut: 0, // ou undefined si pas encore renseigné
@@ -87,8 +88,7 @@ const PlanMissionForm = () => {
     };
 
     dispatch(createMission(missionData)); // ou axios.post(...)
-         navigate("/missions");
-
+    navigate("/missions");
   };
 
   const { listVehicule } = useSelector((state) => state.vehicules);
@@ -233,6 +233,22 @@ const PlanMissionForm = () => {
           >
           </select>
           <FaTools className="absolute left-3 top-3 text-gray-400" /> */}
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 font-semibold mb-2">
+            Rapport
+          </label>
+          <input
+            type="file"
+            name="rapport"
+            accept="application/pdf"
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                rapport: e.target.files[0],
+              }))
+            }
+          />
         </div>
 
         {/* Priorité */}

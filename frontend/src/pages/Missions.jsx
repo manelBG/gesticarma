@@ -193,7 +193,19 @@ const ListeMissions = () => {
                           ? new Date(mission.dateFin).toLocaleString()
                           : "Non définie"}
                       </p>
-
+                      {mission.rapport && (
+                        <p className="text-sm text-gray-600">
+                          Rapport :{" "}
+                          <a
+                            href={`http://localhost:5000/uploads/${mission.rapport}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline hover:text-blue-800"
+                          >
+                            Ouvrir
+                          </a>
+                        </p>
+                      )}
                       <div className="mt-4 flex items-center space-x-4">
                         {/* Accepter ou Refuser une mission */}
                         {statut === "en attente" && user?.role === "admin" && (

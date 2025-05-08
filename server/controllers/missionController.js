@@ -31,7 +31,12 @@ import { sendNotification } from "../index.js";
 
 export const createMission = async (req, res) => {
   try {
-    const mission = new Mission(req.body);
+    const rapport = req.file ? req.file.filename : "";
+    const missionData = {
+      ...req.body,
+      rapport, // ← ajoute le rapport dans le champ
+    };
+    const mission = new Mission(missionData);
     await mission.save();
 
     // Récupérer les données détaillées de la mission (avec l'employé)

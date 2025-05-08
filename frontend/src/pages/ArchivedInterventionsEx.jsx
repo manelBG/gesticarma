@@ -158,18 +158,18 @@ const ArchivedInterventionsEx = () => {
                     Facture: {intervention.factureNumero || "N/A"}
                   </p>
                   {intervention.rapport && (
-  <p className="text-sm text-gray-600">
-    Rapport :{" "}
-    <a
-      href={`http://localhost:5000/files/${intervention.rapport}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-blue-600 underline hover:text-blue-800"
-    >
-      Télécharger
-    </a>
-  </p>
-)}
+                    <p className="text-sm text-gray-600">
+                      Rapport :{" "}
+                      <a
+                        href={`http://localhost:5000/uploads/${intervention.rapport}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline hover:text-blue-800"
+                      >
+                        Ouvrir
+                      </a>
+                    </p>
+                  )}
 
                   <p className="text-sm text-gray-600">
                     État: {intervention.etat}

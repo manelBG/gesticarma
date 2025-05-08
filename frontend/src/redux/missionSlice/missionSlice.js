@@ -7,10 +7,21 @@ export const createMission = createAsyncThunk(
   "missions/createMission",
   async (missionData, { rejectWithValue }) => {
     try {
+      const formData = new FormData();
+      for (const key in missionData) {
+        formData.append(key, missionData[key]);
+      }
+
       const response = await axios.post(
         "http://localhost:5000/api/missions/createMission",
-        missionData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -49,8 +60,6 @@ export const getMissionsByUserId = createAsyncThunk(
     return response.data;
   }
 );
-
-
 
 // 📌 Mettre à jour une mission (PUT)
 export const updateMission = createAsyncThunk(
@@ -141,16 +150,16 @@ const missionSlice = createSlice({
         state.error = action.payload?.message || "Une erreur s'est produite";
       })
       .addCase(getMissionsByUserId.pending, (state) => {
-        state.status = 'loading';
-    })
-    .addCase(getMissionsByUserId.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "loading";
+      })
+      .addCase(getMissionsByUserId.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.listMission = action.payload; // Mettre les missions récupérées dans l'état
-    })
-    .addCase(getMissionsByUserId.rejected, (state, action) => {
-        state.status = 'failed';
+      })
+      .addCase(getMissionsByUserId.rejected, (state, action) => {
+        state.status = "failed";
         state.error = action.error.message;
-    })
+      })
 
       // updateMission
       .addCase(updateMission.pending, (state) => {
