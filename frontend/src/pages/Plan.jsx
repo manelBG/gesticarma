@@ -110,6 +110,7 @@ const PlanMissionForm = () => {
               name="dateDebut"
               value={formData.dateDebut}
               onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]}
               className="w-full border rounded-md p-3 pl-10"
             />
             <FaCalendarAlt className="absolute left-3 top-3 text-gray-400" />
@@ -141,6 +142,7 @@ const PlanMissionForm = () => {
               value={formData.endDate}
               onChange={handleChange}
               className="w-full border rounded-md p-3 pl-10"
+              min={new Date().toISOString().split("T")[0]}
             />
             <FaCalendarAlt className="absolute left-3 top-3 text-gray-400" />
             {errors.endDate && (
