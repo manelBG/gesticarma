@@ -70,6 +70,21 @@ export const deleteIntervention = createAsyncThunk(
     }
   }
 );
+
+export const archiveIntervention = createAsyncThunk(
+  "interventions/archiveIntervention",
+  async (interventionId, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/interventions/archiveIntervention?interventionid=${interventionId}`
+      );
+      return response.data.archived; // only return the updated intervention
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 const interventionSlice = createSlice({
   name: "interventions",
   initialState: {
@@ -127,18 +142,36 @@ const interventionSlice = createSlice({
         state.error = action.payload?.message || "Une erreur s'est produite";
       })
       // Handle deleteIntervention
-      .addCase(deleteIntervention.pending, (state) => {
+      // .addCase(deleteIntervention.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = null;
+      // })
+      // .addCase(deleteIntervention.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   // Filter out the deleted inter from the list
+      //   state.listIntervention = state.listIntervention.filter(
+      //     (intervention) => intervention._id !== action.payload._id
+      //   );
+      // })
+      // .addCase(deleteIntervention.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.payload?.message || "Une erreur s'est produite";
+      // });
+      .addCase(archiveIntervention.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteIntervention.fulfilled, (state, action) => {
+      .addCase(archiveIntervention.fulfilled, (state, action) => {
         state.loading = false;
-        // Filter out the deleted inter from the list
-        state.listIntervention = state.listIntervention.filter(
-          (intervention) => intervention._id !== action.payload._id
+        // Marquer comme archivée plutôt que supprimer
+        state.listIntervention = state.listIntervention.map((intervention) =>
+          intervention._id === action.payload._id
+            ? { ...intervention, isArchived: true }
+            : intervention
         );
       })
-      .addCase(deleteIntervention.rejected, (state, action) => {
+
+      .addCase(archiveIntervention.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Une erreur s'est produite";
       });

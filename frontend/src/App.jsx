@@ -25,6 +25,7 @@ import AjoutVehicule from './pages/AjoutVehicule'; // Le formulaire d'ajout
 import AjoutIntervention from './pages/AjouterIntervention';
 import AjoutFourniture from './pages/AjouterFourniture';
 import AjoutInterventionExterne from'./pages/Ajouterinterventionexterne';
+import ArchivedIntervention from './pages/ArchivedIntervention';
 // Le formulaire d'ajout
 
 
@@ -112,6 +113,14 @@ function App() {
           }
         />
         <Route
+          path="/interventions/archived"
+          element={
+            <ProtectRoute>
+              <ArchivedIntervention />
+            </ProtectRoute>
+          }
+        />
+        <Route
           path="interventions/externe"
           element={
             <ProtectRoute>
@@ -165,7 +174,10 @@ function App() {
         <Route path="/intervention/ajouter" element={<AjoutIntervention />} />
         <Route path="/fourniture/ajouter" element={<AjoutFourniture />} />
         <Route path="/missions/:userId" element={<Missions />} />
-        <Route path="/interventionexterne/ajouter" element={<AjoutInterventionExterne />} />
+        <Route
+          path="/interventionexterne/ajouter"
+          element={<AjoutInterventionExterne />}
+        />
       </Route>
     </Routes>
   );

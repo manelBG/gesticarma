@@ -125,3 +125,25 @@ export const updateIntervention = async (req, res) => {
     res.status(500).json({ message: "Erreur lors de la mise à jour", error });
   }
 };
+
+export const archiveIntervention = async (req, res) => {
+  const interventionId = req.query.interventionid;
+  console.log(interventionId, "interventionId to archive");
+
+  try {
+    const archived = await Intervention.findByIdAndUpdate(
+      interventionId,
+      { isArchived: true },
+      { new: true }
+    );
+
+    if (!archived)
+      return res.status(404).json({ message: "Intervention non trouvée" });
+
+    res
+      .status(200)
+      .json({ message: "Intervention archivée avec succès", archived });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de l'archivage", error });
+  }
+};

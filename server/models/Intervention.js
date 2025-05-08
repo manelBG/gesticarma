@@ -45,6 +45,11 @@ const interventionSchema = new Schema(
       ref: "Vehicule",
       // required: true,
     },
+    isArchived: {
+      type: Boolean,
+      default: false,
+      // required: true,
+    },
   },
   { timestamps: true }
 );

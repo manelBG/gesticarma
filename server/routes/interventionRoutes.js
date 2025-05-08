@@ -4,7 +4,8 @@ import {
   getAllInterventions,        // Utilise getAllInterventions pour récupérer toutes les interventions internes
   getInterventionById,        // Utilise getInterventionById pour récupérer une intervention interne par ID
   updateIntervention,         // Utilise updateIntervention pour mettre à jour une intervention interne
-  deleteIntervention          // Utilise deleteIntervention pour supprimer une intervention interne
+  deleteIntervention,          // Utilise deleteIntervention pour supprimer une intervention interne
+  archiveIntervention
 } from '../controllers/interventionController.js';
 import auth from '../middlewares/authMiddleware.js';
 import { verifyToken } from '../middlewares/authMiddleware.js'; // ✅ Import correct de verifyToken
@@ -24,5 +25,5 @@ router.get('/:id', auth, getInterventionById);  // Récupère une intervention i
 router.put("/updateIntervention", updateIntervention);  // Met à jour une intervention interne
 
 router.delete("/deleteIntervention", deleteIntervention);  // Supprime une intervention interne
-
+router.put("/archiveIntervention", archiveIntervention);
 export default router;

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   archiveIntervention,
+  deleteIntervention,
   updateIntervention,
 } from "../redux/interventionSlice/interventionSlice";
 import { getInterventions } from "../redux/interventionSlice/interventionSlice"; // Assuming this fetches the interventions
 
-const ListeInterventionsInternes = () => {
+const ArchivedIntervention = () => {
   const dispatch = useDispatch();
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -71,7 +72,7 @@ const ListeInterventionsInternes = () => {
 
   const confirmDelete = async () => {
     try {
-      await dispatch(archiveIntervention(selectedInterventionId));
+      await dispatch(deleteIntervention(selectedInterventionId));
       dispatch(getInterventions());
       setShowDeleteModal(false);
       setSelectedInterventionId(null);
@@ -80,36 +81,24 @@ const ListeInterventionsInternes = () => {
     }
   };
 
-  const visibleInterventions = listIntervention.filter(
-    (i) => !i.isArchived
-  );
+  const visibleInterventions = listIntervention.filter((i) => i.isArchived);
 
   return (
     <div className="w-full max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-lg">
       <h1 className="text-4xl font-pacifico text-black mb-6 text-center">
-        Liste des Interventions Internes
+        Archived Interventions Internes
       </h1>
       {/* Affichage des erreurs */}
       {/* {error && <div className="text-red-500 mb-4">{error}</div>} */}
       {/* Liste des interventions */}
       <div className="w-full p-6 bg-gray-100 rounded-xl shadow-lg mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-          Interventions Internes
+          Archived Interventions
         </h2>
-        {(storedUser?.role === "technicien" ||
-          storedUser?.role === "admin") && (
-          <div className="flex justify-end mb-4">
-            <a
-              href="/intervention/ajouter"
-              className="bg-gray-600 hover:bg-gray-800 text-white font-semibold px-6 py-2 rounded-full shadow-md transition duration-300 ease-in-out flex items-center gap-2"
-            >
-              + Ajouter une intervention
-            </a>
-          </div>
-        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {Array.isArray(visibleInterventions) && visibleInterventions.length > 0 ? (
+          {Array.isArray(visibleInterventions) &&
+          visibleInterventions.length > 0 ? (
             visibleInterventions
               .filter((intervention) => {
                 // Si directeur, il voit tout
@@ -171,13 +160,6 @@ const ListeInterventionsInternes = () => {
                     {/* Edit button */}
 
                     <>
-                      <button
-                        onClick={() => handleEditClick(intervention)}
-                        className="bg-yellow-500 text-white px-4 py-2 rounded-full mt-4 hover:bg-yellow-600"
-                      >
-                        Modifier
-                      </button>
-
                       <button
                         className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
                         onClick={() => handleDeleteClick(intervention._id)}
@@ -348,4 +330,4 @@ const ListeInterventionsInternes = () => {
   );
 };
 
-export default ListeInterventionsInternes;
+export default ArchivedIntervention;
