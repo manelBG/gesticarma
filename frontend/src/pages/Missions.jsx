@@ -7,39 +7,78 @@ import {
   getMissionsByUserId,
   updateMissionStatut,
 } from "../redux/missionSlice/missionSlice";
+import { Link } from "react-router-dom";
+
 import { useAuth } from "../hooks/useAuth"; // récupère l'utilisateur connecté
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+import {
+  Car,
+  Users,
+  Wrench,
+  ClipboardList,
+  Calendar,
+  Settings2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const ListeMissions = () => {
   const dispatch = useDispatch();
+  const [stats, setStats] = useState(null);
+  const [chartData, setChartData] = useState([]);
+  const [pieData, setPieData] = useState([]);
+  const [greeting, setGreeting] = useState("");
+  const [currentTime, setCurrentTime] = useState("");
   const { listMission, error, listMissionByUserId } = useSelector(
     (state) => state.missions
   );
+  console.log(listMission, "listMissionlistMission");
+  const missionCount = listMission?.length || 0;
+  const enCoursCount =
+    listMission?.filter((m) => m.statut === "en cours").length || 0;
+  const enAttenteCount =
+    listMission?.filter((m) => m.statut === "en attente").length || 0;
+  const doneMissionCount =
+    listMission?.filter((m) => m.statut === "terminée").length || 0;
+  const refusedMissionCount =
+    listMission?.filter((m) => m.statut === "refuser").length || 0;
 
-const [loading, setLoading] = useState(false);
+  console.log(enCoursCount, "✅ Missions en cours");
 
-const handleSwitchStatut = async (missionId, statut, raisonRefus = "") => {
-  if (loading) return; // Prevents dispatching if already in progress
-  setLoading(true);
+  const [loading, setLoading] = useState(false);
 
-  try {
-    const resultAction = await dispatch(
-      updateMissionStatut({ missionId, statut, raisonRefus })
-    );
+  const handleSwitchStatut = async (missionId, statut, raisonRefus = "") => {
+    if (loading) return; // Prevents dispatching if already in progress
+    setLoading(true);
 
-    if (updateMissionStatut.fulfilled.match(resultAction)) {
-      if (user?.role === "admin") {
-        dispatch(getMissions());
-      } else {
-        dispatch(getMissionsByUserId(user._id));
+    try {
+      const resultAction = await dispatch(
+        updateMissionStatut({ missionId, statut, raisonRefus })
+      );
+
+      if (updateMissionStatut.fulfilled.match(resultAction)) {
+        if (user?.role === "admin") {
+          dispatch(getMissions());
+        } else {
+          dispatch(getMissionsByUserId(user._id));
+        }
       }
+    } catch (error) {
+      console.error("Error updating mission status:", error);
+    } finally {
+      setLoading(false); // Reset loading state after operation is complete
     }
-  } catch (error) {
-    console.error("Error updating mission status:", error);
-  } finally {
-    setLoading(false); // Reset loading state after operation is complete
-  }
-};
-
+  };
 
   const { user } = useAuth(); // Assure-toi que ton hook renvoie bien l'objet user
   console.log(user, "useruseruser");
@@ -72,10 +111,48 @@ const handleSwitchStatut = async (missionId, statut, raisonRefus = "") => {
       </h1>
 
       {/* {error && <div className="text-red-500 mb-4">{error}</div>} */}
+      <div className="p-8 space-y-11">
+        <div className="bg-white rounded-3xl shadow-lg p-10 space-y-10 max-w-7xl mx-auto">
+          <p className="text-gray-700 text-lg font-medium">
+            Voici un aperçu global de l'activité du parc automobile
+          </p>
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <DashboardCard
+              icon={ClipboardList}
+              label="Missions"
+              value={missionCount}
+              to="/missions"
+            />
+
+            <DashboardCard
+              icon={Settings2}
+              label="Mission en attente"
+              value={enAttenteCount}
+            />
+            <DashboardCard
+              icon={Wrench}
+              label="Mission en cours"
+              value={enCoursCount}
+            />
+            <DashboardCard
+              icon={Wrench}
+              label="Mission terminée"
+              value={doneMissionCount}
+            />
+            <DashboardCard
+              icon={Wrench}
+              label="Mission Refuser"
+              value={refusedMissionCount}
+            />
+          </div>
+        </div>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {["en attente", "en cours", "terminée"].map((statut) => {
-          const missionsStatut = listMission.filter((m) => m.statut === statut);
+          const missionsStatut = listMission
+            .filter((m) => m.statut === statut)
+            .reverse();
 
           return (
             <div
@@ -213,4 +290,16 @@ const handleSwitchStatut = async (missionId, statut, raisonRefus = "") => {
   );
 };
 
+function DashboardCard({ icon: Icon, label, value, to }) {
+  return (
+    <Link
+      to={to}
+      className="bg-white rounded-2xl shadow-lg p-4 hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-center space-y-2 text-blue-900"
+    >
+      <Icon className="w-7 h-7 text-blue-600" />
+      <div className="text-xl font-bold">{value}</div>
+      <div className="text-sm">{label}</div>
+    </Link>
+  );
+}
 export default ListeMissions;

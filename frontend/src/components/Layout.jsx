@@ -290,15 +290,15 @@ export default function Layout() {
                 path="/interventions/interne"
                 active={isActive("/interventions/interne")}
               />
-              {user.role === "admin" ||
-                (user.role === "technicien" && (
+              {(user.role === "admin" ||
+                user.role === "technicien") && (
                   <SideItem
                     icon={Wrench}
                     label="Archived Interne"
                     path="/interventions/archived"
                     active={isActive("/interventions/archived")}
                   />
-                ))}
+                )}
               <SideItem
                 icon={Layers}
                 label="Externe"

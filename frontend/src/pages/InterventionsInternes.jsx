@@ -13,6 +13,12 @@ const ListeInterventionsInternes = () => {
   const [currentIntervention, setCurrentIntervention] = useState(null);
   const { listIntervention } = useSelector((state) => state.interventions);
   console.log(listIntervention, "listIntervention");
+  const statutTextColors = {
+    "en cours": "text-blue-600",
+    terminée: "text-green-600",
+    annulée: "text-red-600",
+  };
+
   useEffect(() => {
     dispatch(getInterventions());
   }, [dispatch]);
@@ -80,9 +86,7 @@ const ListeInterventionsInternes = () => {
     }
   };
 
-  const visibleInterventions = listIntervention.filter(
-    (i) => !i.isArchived
-  );
+  const visibleInterventions = listIntervention.filter((i) => !i.isArchived);
 
   return (
     <div className="w-full max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-lg">
@@ -109,7 +113,8 @@ const ListeInterventionsInternes = () => {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {Array.isArray(visibleInterventions) && visibleInterventions.length > 0 ? (
+          {Array.isArray(visibleInterventions) &&
+          visibleInterventions.length > 0 ? (
             visibleInterventions
               .filter((intervention) => {
                 // Si directeur, il voit tout
@@ -147,7 +152,11 @@ const ListeInterventionsInternes = () => {
                         : "Non assigné"}
                     </p>
 
-                    <p className="text-sm text-gray-600">
+                    <p
+                      className={`text-sm font-semibold ${
+                        statutTextColors[intervention.statut] || "text-gray-600"
+                      }`}
+                    >
                       <span className="font-semibold">Statut:</span>{" "}
                       {intervention.statut}
                     </p>
