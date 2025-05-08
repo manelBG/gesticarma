@@ -6,6 +6,7 @@ import {
   getInterventionExterneById,
   updateInterventionExterne,
   deleteInterventionExterne,
+  archiveInterventionExterne,
 } from "../controllers/interventionExterneController.js";
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.get(
 );
 router.put("/updateInterventionExterne/:id", updateInterventionExterne);
 router.delete("/deleteInterventionExterne/:id", deleteInterventionExterne);
+router.put("/archiveInterventionExterne/:id", archiveInterventionExterne);
 
 export default router;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  archiveInterventionExterne,
   deleteInterventionExterne,
   updateInterventionExterne,
 } from "../redux/interventionexterneSlice/interventionexterneSlice"; // Importer les actions pour interventions externes
@@ -97,7 +98,7 @@ const ListeInterventionsExternes = () => {
 
   const confirmDelete = async () => {
     try {
-      await dispatch(deleteInterventionExterne(selectedInterventionId));
+      await dispatch(archiveInterventionExterne(selectedInterventionId));
       dispatch(getInterventionsExternes());
       setShowDeleteModal(false);
       setSelectedInterventionId(null);
@@ -105,7 +106,9 @@ const ListeInterventionsExternes = () => {
       console.error("Erreur lors de la suppression :", error);
     }
   };
-
+  const visibleInterventionsEx = listInterventionExterne.filter(
+    (i) => !i.isArchived
+  );
   return (
     <div className="w-full max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-lg">
       <h1 className="text-4xl font-pacifico text-black mb-6 text-center">
@@ -351,9 +354,9 @@ const ListeInterventionsExternes = () => {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {Array.isArray(listInterventionExterne) &&
-          listInterventionExterne.length > 0 ? (
-            listInterventionExterne.map((intervention) => (
+          {Array.isArray(visibleInterventionsEx) &&
+          visibleInterventionsEx.length > 0 ? (
+            visibleInterventionsEx.map((intervention) => (
               <div
                 key={intervention._id}
                 className="p-4 bg-gray-200 rounded-xl shadow-md hover:shadow-lg transition duration-300 ease-in-out"

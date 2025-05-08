@@ -64,6 +64,20 @@ export const deleteInterventionExterne = createAsyncThunk(
   }
 );
 
+export const archiveInterventionExterne = createAsyncThunk(
+  "interventionExternes/archiveInterventionExterne",
+  async (interventionExterneId, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/interventions-externes/archiveInterventionExterne/${interventionExterneId}`
+      );
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || { message: err.message });
+    }
+  }
+);
+
 const interventionExterneSlice = createSlice({
   name: "interventionExternes",
   initialState: {
@@ -130,6 +144,23 @@ const interventionExterneSlice = createSlice({
         );
       })
       .addCase(deleteInterventionExterne.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Une erreur s'est produite";
+      })
+      .addCase(archiveInterventionExterne.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(archiveInterventionExterne.fulfilled, (state, action) => {
+        state.loading = false;
+        state.listInterventionExterne = state.listInterventionExterne.map(
+          (intervention) =>
+            intervention._id === action.payload._id
+              ? { ...intervention, isArchived: true }
+              : intervention
+        );
+      })
+      .addCase(archiveInterventionExterne.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Une erreur s'est produite";
       });

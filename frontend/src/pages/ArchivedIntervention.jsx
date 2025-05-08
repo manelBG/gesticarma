@@ -160,12 +160,14 @@ const ArchivedIntervention = () => {
                     {/* Edit button */}
 
                     <>
-                      <button
-                        className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
-                        onClick={() => handleDeleteClick(intervention._id)}
-                      >
-                        Supprimer
-                      </button>
+                      {storedUser?.role === "admin" && (
+                        <button
+                          className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full"
+                          onClick={() => handleDeleteClick(intervention._id)}
+                        >
+                          Supprimer
+                        </button>
+                      )}
                     </>
                   </div>
                 </div>
@@ -179,127 +181,7 @@ const ArchivedIntervention = () => {
       </div>
 
       {/* Form to edit intervention */}
-      {isEditing && currentIntervention && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-xl w-1/2">
-            <h3 className="text-2xl font-semibold mb-4">
-              Modifier l'Intervention
-            </h3>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Description
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={currentIntervention.description}
-                  onChange={(e) =>
-                    setCurrentIntervention({
-                      ...currentIntervention,
-                      description: e.target.value,
-                    })
-                  }
-                />
-              </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Type
-                </label>
-                <select
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={currentIntervention.type}
-                  onChange={(e) =>
-                    setCurrentIntervention({
-                      ...currentIntervention,
-                      type: e.target.value,
-                    })
-                  }
-                >
-                  <option value="Urgente">Urgente</option>
-                  <option value="Curative">Curative</option>
-                  <option value="Preventive">Preventive</option>
-                </select>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Statut
-                </label>
-                <select
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={currentIntervention.statut}
-                  onChange={(e) =>
-                    setCurrentIntervention({
-                      ...currentIntervention,
-                      statut: e.target.value,
-                    })
-                  }
-                >
-                  <option value="en cours">En cours</option>
-                  <option value="terminée">Terminée</option>
-                  <option value="annulée">Annulée</option>
-                </select>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Kilométrage
-                </label>
-                <input
-                  type="number"
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={currentIntervention.kilometrage}
-                  onChange={(e) =>
-                    setCurrentIntervention({
-                      ...currentIntervention,
-                      kilometrage: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Date de l'intervention
-                </label>
-                <input
-                  type="date"
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={
-                    new Date(currentIntervention.dateIntervention)
-                      .toISOString()
-                      .split("T")[0]
-                  }
-                  onChange={(e) =>
-                    setCurrentIntervention({
-                      ...currentIntervention,
-                      dateIntervention: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={handleCloseForm}
-                  className="mr-4 bg-gray-500 text-white px-4 py-2 rounded-full"
-                >
-                  Fermer
-                </button>
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white px-6 py-2 rounded-full"
-                >
-                  Enregistrer
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
       {showDeleteModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg">
@@ -316,12 +198,14 @@ const ArchivedIntervention = () => {
               >
                 Annuler
               </button>
-              <button
-                onClick={confirmDelete}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full"
-              >
-                Supprimer
-              </button>
+              {storedUser?.role === "admin" && (
+                <button
+                  onClick={confirmDelete}
+                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full"
+                >
+                  Supprimer
+                </button>
+              )}
             </div>
           </div>
         </div>

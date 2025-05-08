@@ -26,6 +26,7 @@ import AjoutIntervention from './pages/AjouterIntervention';
 import AjoutFourniture from './pages/AjouterFourniture';
 import AjoutInterventionExterne from'./pages/Ajouterinterventionexterne';
 import ArchivedIntervention from './pages/ArchivedIntervention';
+import ArchivedInterventionsEx from './pages/ArchivedInterventionsEx';
 // Le formulaire d'ajout
 
 
@@ -125,6 +126,14 @@ function App() {
           element={
             <ProtectRoute>
               <InterventionsExternes />
+            </ProtectRoute>
+          }
+        />
+        <Route
+          path="interventions/externe/archived"
+          element={
+            <ProtectRoute>
+              <ArchivedInterventionsEx />
             </ProtectRoute>
           }
         />

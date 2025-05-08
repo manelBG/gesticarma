@@ -103,3 +103,21 @@ export const deleteInterventionExterne = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+export const archiveInterventionExterne = async (req, res) => {
+  try {
+    const updated = await InterventionExterne.findByIdAndUpdate(
+      req.params.id,
+      { isArchived: true },
+      { new: true }
+    );
+
+    if (!updated)
+      return res
+        .status(404)
+        .json({ message: "Intervention externe non trouvée" });
+
+    res.status(200).json(updated);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -290,19 +290,26 @@ export default function Layout() {
                 path="/interventions/interne"
                 active={isActive("/interventions/interne")}
               />
-              {user.role === "admin" &&
-                <SideItem
-                  icon={Wrench}
-                  label="Archived Interne"
-                  path="/interventions/archived"
-                  active={isActive("/interventions/archived")}
-                />
-              }
+              {user.role === "admin" ||
+                (user.role === "technicien" && (
+                  <SideItem
+                    icon={Wrench}
+                    label="Archived Interne"
+                    path="/interventions/archived"
+                    active={isActive("/interventions/archived")}
+                  />
+                ))}
               <SideItem
                 icon={Layers}
                 label="Externe"
                 path="/interventions/externe"
                 active={isActive("/interventions/externe")}
+              />
+              <SideItem
+                icon={Layers}
+                label="Archived Externe"
+                path="/interventions/externe/archived"
+                active={isActive("/interventions/externe/archived")}
               />
               <SideItem
                 icon={Box}

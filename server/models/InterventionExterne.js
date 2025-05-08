@@ -39,7 +39,12 @@ const interventionExterneSchema = new mongoose.Schema({
     type: String,
     enum: ['en attente', 'en cours', 'terminée'],
     default: 'en attente'
-  }
+  },
+      isArchived: {
+      type: Boolean,
+      default: false,
+      // required: true,
+    },
 }, {
   timestamps: true
 });
