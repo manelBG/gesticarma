@@ -150,7 +150,13 @@ const ListeFournituresGroupées = () => {
                           {fourniture?.nom}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          {/* Marque:  */}
+                        Technicien: {fourniture.technicien ? `${fourniture.technicien.prenom} ${fourniture.technicien.nom}` : 'Non défini'}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                         Marque: {fourniture.marque?.nom || 'Non définie'}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                         Fournisseur: {fourniture.fournisseur?.nom || 'non définie'}
                         </p>
                         <p className="text-sm text-gray-600">
                           Quantité: {fourniture.quantite}

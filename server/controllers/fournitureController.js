@@ -15,9 +15,18 @@ export const createFourniture = async (req, res) => {
 
 export const getAllFournitures = async (req, res) => {
   try {
-    const fournitures = await Fourniture.find().populate({
+    const fournitures = await Fourniture.find()
+    .populate({
       path: "technicien",
-      select: "name", // sélectionner uniquement nom et prénom du technicien
+      select: "nom prenom ", // sélectionner uniquement nom et prénom du technicien
+    })
+    .populate({
+      path: "marque",
+      select: "nom",
+    })
+    .populate({
+      path: "fournisseur",
+      select: "nom",
     });
 
     res.status(200).json(fournitures);

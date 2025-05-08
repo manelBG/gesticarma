@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { getFournisseurs } from "../redux/fournisseurSlice/fournisseurSlice";
-// import { getMarques } from "../redux/marqueSlice/marqueSlice";
+import { getFournisseurs } from "../redux/fournisseurSlice/fournisseurSlice";
+import { getMarques } from "../redux/marqueSlice/marqueSlice";
 import { useNavigate } from "react-router-dom";
 import { createFourniture } from "../redux/fournitureSlice/fournitureSlice";
 
@@ -13,7 +13,7 @@ const AjouterFourniture = () => {
 
   const [fourniture, setFourniture] = useState({
     nom: "",
-    // marque: "",
+    marque: "",
     quantite: "",
     dateAjout: new Date().toISOString().split("T")[0],
     typeFourniture: "",
@@ -22,16 +22,16 @@ const AjouterFourniture = () => {
     dimension: "",
     typeFiltre: "",
     typeLubrifiant: "",
-    // fournisseur: "",
+    fournisseur: "",
     technicien: "", // Auto-set from logged user
   });
 console.log(fourniture, "fourniture");
-//   const { listFournisseur } = useSelector((state) => state.fournisseurs);
-//   const { listMarque } = useSelector((state) => state.marques);
+   const { listFournisseur } = useSelector((state) => state.fournisseurs);
+   const { listMarque } = useSelector((state) => state.marques);
 
   useEffect(() => {
-    // dispatch(getFournisseurs());
-    // dispatch(getMarques());
+     dispatch(getFournisseurs());
+     dispatch(getMarques());
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
@@ -92,23 +92,28 @@ console.log(fourniture, "fourniture");
         </div>
 
         {/* Marque */}
-        {/* <div>
+        { <div>
           <label className="block font-semibold mb-2">Marque</label>
           <select
-            name="marque"
-            value={fourniture.marque}
-            onChange={handleChange}
-            className="w-full border px-4 py-2 rounded-md"
-            
-          >
-            <option value="">Sélectionner une marque</option>
-            {listMarque.map((marque) => (
-              <option key={marque._id} value={marque._id}>
-                {marque.nom}
-              </option>
-            ))} 
-          </select>
-        </div> */}
+                name="marque"
+                value={fourniture.marque}
+                onChange={handleChange}
+                className="w-full border px-4 py-2 rounded-md"
+              >
+                <option value="">Sélectionner une marque</option>
+                {Array.isArray(listMarque) && listMarque.length > 0 ? (
+                  listMarque.map((marque) => (
+                    <option key={marque._id} value={marque._id}>
+                      {marque.nom}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>
+                    Aucune marque disponible
+                  </option>
+                )}
+              </select>
+        </div> }
 
         {/* Quantité */}
         <div>
@@ -225,7 +230,7 @@ console.log(fourniture, "fourniture");
         )}
 
         {/* Fournisseur */}
-        {/* <div>
+        { <div>
           <label className="block font-semibold mb-2">Fournisseur</label>
           <select
             name="fournisseur"
@@ -235,13 +240,13 @@ console.log(fourniture, "fourniture");
             
           >
             <option value="">Sélectionner un fournisseur</option>
-          {listFournisseur.map((fournisseur) => (
+          { Array.isArray(listFournisseur)&& listFournisseur.map((fournisseur) => (
               <option key={fournisseur._id} value={fournisseur._id}>
                 {fournisseur.nom}
               </option>
             ))} 
           </select>
-        </div> */}
+        </div> }
 
         <div className="flex justify-end">
           <button

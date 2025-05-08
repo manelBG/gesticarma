@@ -9,9 +9,11 @@ const marqueSchema = new mongoose.Schema({
   
   description: {
     type: String
-  }
+  },
+  fournitures: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Fourniture' }]
 }, {
   timestamps: true
 });
 
-export default mongoose.model('Marque', marqueSchema);
+const Marque = mongoose.model('Marque', marqueSchema);
+export default Marque;

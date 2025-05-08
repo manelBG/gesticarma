@@ -8,7 +8,8 @@ import missionReducer from "./missionSlice/missionSlice";
 import interventionexterneReducer from "./interventionexterneSlice/interventionexterneSlice";
 import prestataireReducer from './prestataireSlice/prestataireSlice';
 import notificationReducer from "./notificationSlice/notificationSlice";
-
+import fournisseurReducer from "./fournisseurSlice/fournisseurSlice";
+import marqueReducer from "./marqueSlice/marqueSlice";
 
 const store = configureStore({
   reducer: {
@@ -21,6 +22,8 @@ const store = configureStore({
     interventionExternes: interventionexterneReducer,
     prestataire: prestataireReducer, // Correctement ajouté
     notification: notificationReducer,
+    fournisseurs:fournisseurReducer,
+    marques:marqueReducer,
   },
 });
 

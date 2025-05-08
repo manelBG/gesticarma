@@ -20,7 +20,7 @@ export const ajouterMarque = async (req, res) => {
 // 📋 Récupérer toutes les marques
 export const getAllMarques = async (req, res) => {
   try {
-    const marques = await Marque.find();
+    const marques = await Marque.find().populate('fournitures');
     res.status(200).json(marques);
   } catch (error) {
     res.status(500).json({ message: 'Erreur serveur lors de la récupération des marques.' });
