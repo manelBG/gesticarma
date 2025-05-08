@@ -7,10 +7,21 @@ export const createInterventionExterne = createAsyncThunk(
   "interventionExternes/createInterventionExterne",
   async (interventionExterneData, { rejectWithValue }) => {
     try {
+      const formData = new FormData();
+      for (const key in interventionExterneData) {
+        formData.append(key, interventionExterneData[key]);
+      }
+
       const response = await axios.post(
         "http://localhost:5000/api/interventions-externes/createinterventionsExterne",
-        interventionExterneData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);

@@ -20,12 +20,19 @@ import technicienRoutes from "./routes/technicienRoutes.js";
 
 import { Server } from "socket.io";
 import http from "http";
+// const path = require("path");
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
 
 // Create an HTTP server for the Express app
 const server = http.createServer(app);
+app.use("/files", express.static(path.join(__dirname, "upload/files")));
+app.use("/uploads", express.static("uploads"));
 
 // Create a Socket.IO server attached to the HTTP server
 const io = new Server(server, {

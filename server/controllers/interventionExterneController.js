@@ -25,6 +25,7 @@ export const createInterventionExterne = async (req, res) => {
     if (!prestataireExists) {
       return res.status(404).json({ message: "Prestataire non trouvé" });
     }
+    const rapport = req.file ? req.file.filename : "";
 
     const newIntervention = new InterventionExterne({
       description,
@@ -36,6 +37,7 @@ export const createInterventionExterne = async (req, res) => {
       vehicule,
       prestataire,
       technicien,
+      rapport
     });
 
     await newIntervention.save();

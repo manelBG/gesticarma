@@ -28,7 +28,7 @@ const AjoutInterventionExterne = () => {
   console.log(interventionExterne, "interventionExterne");
   const { listVehicule } = useSelector((state) => state.vehicules);
   const { prestataires = [] } = useSelector((state) => state.prestataire || {});
-console.log(prestataires, "listPrestataire");
+  console.log(prestataires, "listPrestataire");
   // Liste des prestataires
 
   useEffect(() => {
@@ -235,6 +235,22 @@ console.log(prestataires, "listPrestataire");
             <option value="en cours">En cours</option>
             <option value="terminée">Terminée</option>
           </select>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 font-semibold mb-2">
+            Rapport (PDF uniquement)
+          </label>
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={(e) =>
+              setInterventionExterne((prev) => ({
+                ...prev,
+                rapport: e.target.files[0],
+              }))
+            }
+            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+          />
         </div>
 
         <div className="mb-4 flex justify-end">
