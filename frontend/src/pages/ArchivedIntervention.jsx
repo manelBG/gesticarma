@@ -86,14 +86,14 @@ const ArchivedIntervention = () => {
   return (
     <div className="w-full max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-lg">
       <h1 className="text-4xl font-pacifico text-black mb-6 text-center">
-        Archived Interventions Internes
+      Liste des Interventions Internes Archivés
       </h1>
       {/* Affichage des erreurs */}
       {/* {error && <div className="text-red-500 mb-4">{error}</div>} */}
       {/* Liste des interventions */}
       <div className="w-full p-6 bg-gray-100 rounded-xl shadow-lg mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-          Archived Interventions
+          Interventions Internes Archivés
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

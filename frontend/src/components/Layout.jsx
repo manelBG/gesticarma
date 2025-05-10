@@ -13,6 +13,7 @@ import {
   Box,
   ChevronRight,
   Home,
+  FileArchive,
 } from "lucide-react";
 import { cn } from "../utils/utils";
 import { Tooltip } from "../components/ui/tooltip";
@@ -214,7 +215,7 @@ export default function Layout() {
         </div>
 
         {/* ACCUEIL */}
-        <div className="text-xs uppercase px-4 pt-4 pb-1 text-gray-700 tracking-widest">
+        <div className="text-xs uppercase px-4 pt-1 pb-1 text-gray-700 tracking-widest">
           — ACCUEIL
         </div>
         <div className="px-2">
@@ -293,8 +294,8 @@ export default function Layout() {
               {(user.role === "admin" ||
                 user.role === "technicien") && (
                   <SideItem
-                    icon={Wrench}
-                    label="Archived Interne"
+                    icon={FileArchive}
+                    label="historique internes"
                     path="/interventions/archived"
                     active={isActive("/interventions/archived")}
                   />
@@ -306,8 +307,8 @@ export default function Layout() {
                 active={isActive("/interventions/externe")}
               />
               <SideItem
-                icon={Layers}
-                label="Archived Externe"
+                icon={FileArchive}
+                label="Historique Externes"
                 path="/interventions/externe/archived"
                 active={isActive("/interventions/externe/archived")}
               />

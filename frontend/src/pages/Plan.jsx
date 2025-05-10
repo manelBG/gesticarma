@@ -234,7 +234,7 @@ const PlanMissionForm = () => {
           </select>
           <FaTools className="absolute left-3 top-3 text-gray-400" /> */}
         </div>
-        <div className="mb-4">
+        {/*<div className="mb-4">
           <label className="block text-gray-700 font-semibold mb-2">
             Rapport
           </label>
@@ -249,7 +249,7 @@ const PlanMissionForm = () => {
               }))
             }
           />
-        </div>
+        </div>*/}
 
         {/* Priorité */}
         <div className="relative">
