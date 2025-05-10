@@ -244,6 +244,29 @@ export const updateMissionStatut = async (req, res) => {
   }
 };
 
+export const updateMissionRapport = async (req, res) => {
+  try {
+    const { missionId } = req.body;
+    const rapport = req.file ? req.file.filename : "";
+
+    const mission = await Mission.findByIdAndUpdate(
+      missionId,
+      { rapport, statut: "terminée" },
+      { new: true }
+    );
+
+    if (!mission) {
+      return res.status(404).json({ message: "Mission non trouvée" });
+    }
+
+    return res.status(200).json(mission);
+  } catch (err) {
+    console.error("Erreur lors de l’upload du rapport :", err);
+    return res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
+
 // export const updateMissionStatut = async (req, res) => {
 //   try {
 //     const { missionId, statut } = req.body;

@@ -6,6 +6,7 @@ import {
   getMissions,
   getMissionsByUserId,
   updateMissionStatut,
+  uploadRapport,
 } from "../redux/missionSlice/missionSlice";
 import { Link } from "react-router-dom";
 
@@ -29,6 +30,7 @@ import {
   ClipboardList,
   Calendar,
   XCircle,
+  Upload
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -83,57 +85,57 @@ const ListeMissions = () => {
     }
   };
   const handleTerminerClick = (missionId) => {
-    setSelectedMissionId(missionId)
-    setShowReportModal(true)
-  }
+    setSelectedMissionId(missionId);
+    setShowReportModal(true);
+  };
 
-  const handleReportSubmit = async () => {
-    if (!reportFile) {
-      alert("Veuillez importer un rapport avant de continuer.")
-      return
-    }
+  // const handleReportSubmit = async () => {
+  //   if (!reportFile) {
+  //     alert("Veuillez importer un rapport avant de continuer.")
+  //     return
+  //   }
 
-    setUploadLoading(true)
-    setUploadError("")
+  //   setUploadLoading(true)
+  //   setUploadError("")
 
-    // Création du FormData pour l'upload du fichier
-    const formData = new FormData()
-    formData.append("rapport", reportFile)
-    formData.append("missionId", selectedMissionId)
+  //   // Création du FormData pour l'upload du fichier
+  //   const formData = new FormData()
+  //   formData.append("rapport", reportFile)
+  //   formData.append("missionId", selectedMissionId)
 
-    try {
-      // Remplacez cette URL par l'endpoint de votre API
-      const response = await fetch("http://localhost:5000/uploads/${mission.rapport}", {
-        method: "POST",
-        body: formData,
-        // Si votre API nécessite une authentification
-        headers: {
-          // Supprimez Content-Type pour que le navigateur définisse correctement le boundary pour FormData
-          // 'Content-Type': 'multipart/form-data',
-          // Si vous avez besoin d'un token d'authentification
-          // 'Authorization': `Bearer ${votre_token}`
-        },
-      })
+  //   try {
+  //     // Remplacez cette URL par l'endpoint de votre API
+  //     const response = await fetch("http://localhost:5000/uploads/${mission.rapport}", {
+  //       method: "POST",
+  //       body: formData,
+  //       // Si votre API nécessite une authentification
+  //       headers: {
+  //         // Supprimez Content-Type pour que le navigateur définisse correctement le boundary pour FormData
+  //         // 'Content-Type': 'multipart/form-data',
+  //         // Si vous avez besoin d'un token d'authentification
+  //         // 'Authorization': `Bearer ${votre_token}`
+  //       },
+  //     })
 
-      if (!response.ok) {
-        throw new Error(`Erreur lors de l'upload: ${response.status}`)
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`Erreur lors de l'upload: ${response.status}`)
+  //     }
 
-      const data = await response.json()
+  //     const data = await response.json()
 
-      // Mise à jour du statut de la mission avec le nom du fichier retourné par l'API
-      handleSwitchStatut(selectedMissionId, "terminée", "", data.filename)
+  //     // Mise à jour du statut de la mission avec le nom du fichier retourné par l'API
+  //     handleSwitchStatut(selectedMissionId, "terminée", "", data.filename)
 
-      // Fermeture de la modale et réinitialisation des états
-      setShowReportModal(false)
-      setReportFile(null)
-    } catch (error) {
-      console.error("Erreur lors de l'upload du rapport:", error)
-      setUploadError("Une erreur est survenue lors de l'upload du rapport. Veuillez réessayer.")
-    } finally {
-      setUploadLoading(false)
-    }
-  }
+  //     // Fermeture de la modale et réinitialisation des états
+  //     setShowReportModal(false)
+  //     setReportFile(null)
+  //   } catch (error) {
+  //     console.error("Erreur lors de l'upload du rapport:", error)
+  //     setUploadError("Une erreur est survenue lors de l'upload du rapport. Veuillez réessayer.")
+  //   } finally {
+  //     setUploadLoading(false)
+  //   }
+  // }
   const { user } = useAuth(); // Assure-toi que ton hook renvoie bien l'objet user
   console.log(user, "useruseruser");
   useEffect(() => {
@@ -158,52 +160,80 @@ const ListeMissions = () => {
   const [refusReason, setRefusReason] = useState("");
   const [selectedMissionId, setSelectedMissionId] = useState(null);
 
+  const handleReportSubmit = async () => {
+    if (!reportFile) {
+      alert("Veuillez importer un rapport avant de continuer.");
+      return;
+    }
+
+    setUploadLoading(true);
+    try {
+      const resultAction = await dispatch(
+        uploadRapport({ missionId: selectedMissionId, rapportFile: reportFile })
+      );
+
+      if (uploadRapport.fulfilled.match(resultAction)) {
+        setShowReportModal(false);
+        setReportFile(null);
+
+        // Rafraîchir les missions
+        if (user?.role === "admin") {
+          dispatch(getMissions());
+        } else {
+          dispatch(getMissionsByUserId(user._id));
+        }
+      }
+    } catch (err) {
+      console.error("Erreur:", err);
+    } finally {
+      setUploadLoading(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto bg-white p-6 rounded-xl shadow-lg">
       <h1 className="text-4xl font-pacifico text-black mb-6 text-center">
         Liste des Missions
       </h1>
 
-      
       <div className="bg-white rounded-3xl shadow-xl p-8 max-w-7xl mx-auto border border-gray-200">
         <h2 className="text-2xl font-semibold text-blue-900">
           🔍 Aperçu global des missions
-       </h2>
+        </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-       <DashboardCard
-        icon={ClipboardList}
-        label="Toutes les missions"
-        value={missionCount}
-        to="/missions"
-       />
-       <DashboardCard
-        icon={Clock}
-        label="En attente"
-        value={enAttenteCount}
-        to="/missions?filtre=attente"
-       />
-       <DashboardCard
-        icon={Loader2}
-        label="En cours"
-        value={enCoursCount}
-        to="/missions?filtre=encours"
-       />
-       <DashboardCard
-        icon={CheckCircle}
-        label="Terminées"
-        value={doneMissionCount}
-        to="/missions?filtre=terminee"
-       />
-       <DashboardCard
-        icon={XCircle}
-        label="Refusées"
-        value={refusedMissionCount}
-        to="/missions?filtre=refusee"
-       />
-     </div>
-  </div>
-
+          <DashboardCard
+            icon={ClipboardList}
+            label="Toutes les missions"
+            value={missionCount}
+            to="/missions"
+          />
+          <DashboardCard
+            icon={Clock}
+            label="En attente"
+            value={enAttenteCount}
+            to="/missions?filtre=attente"
+          />
+          <DashboardCard
+            icon={Loader2}
+            label="En cours"
+            value={enCoursCount}
+            to="/missions?filtre=encours"
+          />
+          <DashboardCard
+            icon={CheckCircle}
+            label="Terminées"
+            value={doneMissionCount}
+            to="/missions?filtre=terminee"
+          />
+          <DashboardCard
+            icon={XCircle}
+            label="Refusées"
+            value={refusedMissionCount}
+            to="/missions?filtre=refusee"
+          />
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8 ">
         {["en attente", "en cours", "terminée"].map((statut) => {
@@ -290,9 +320,7 @@ const ListeMissions = () => {
                         {/* Passer de "en cours" à "terminée" */}
                         {statut === "en cours" && (
                           <button
-                            onClick={() =>
-                              handleSwitchStatut(mission._id, "terminée")
-                            }
+                            onClick={() => handleTerminerClick(mission._id)}
                             className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                           >
                             Terminer
@@ -359,31 +387,50 @@ const ListeMissions = () => {
       {showReportModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">Importation du rapport</h2>
-            <p className="mb-4 text-gray-600">Vous devez importer un rapport pour terminer cette mission.</p>
+            <h2 className="text-xl font-semibold mb-4">
+              Importation du rapport
+            </h2>
+            <p className="mb-4 text-gray-600">
+              Vous devez importer un rapport pour terminer cette mission.
+            </p>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Rapport de mission</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Rapport de mission
+              </label>
               <div className="flex items-center justify-center w-full">
                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <Upload className="w-8 h-8 mb-2 text-gray-500" />
                     <p className="mb-2 text-sm text-gray-500">
-                      <span className="font-semibold">Cliquez pour importer</span> ou glissez-déposez
+                      <span className="font-semibold">
+                        Cliquez pour importer
+                      </span>{" "}
+                      ou glissez-déposez
                     </p>
-                    <p className="text-xs text-gray-500">PDF, DOCX ou autres formats (max. 10 MB)</p>
+                    <p className="text-xs text-gray-500">
+                      PDF, DOCX ou autres formats (max. 10 MB)
+                    </p>
                   </div>
-                  <input type="file" className="hidden" onChange={(e) => setReportFile(e.target.files[0])} />
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => setReportFile(e.target.files[0])}
+                  />
                 </label>
               </div>
-              {reportFile && <p className="mt-2 text-sm text-green-600">Fichier sélectionné: {reportFile.name}</p>}
+              {reportFile && (
+                <p className="mt-2 text-sm text-green-600">
+                  Fichier sélectionné: {reportFile.name}
+                </p>
+              )}
             </div>
 
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => {
-                  setShowReportModal(false)
-                  setReportFile(null)
+                  setShowReportModal(false);
+                  setReportFile(null);
                 }}
                 className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
               >

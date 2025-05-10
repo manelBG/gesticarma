@@ -1,5 +1,5 @@
 import express from 'express';
-import { createMission, getAllMissions, getMissionsByUserId, getMissions, deleteMission, updateMission, updateMissionStatut} from '../controllers/missionController.js';  // Importer les fonctions du contrôleur
+import { createMission, getAllMissions, getMissionsByUserId, getMissions, deleteMission, updateMission, updateMissionStatut, updateMissionRapport} from '../controllers/missionController.js';  // Importer les fonctions du contrôleur
 import { verifyToken } from '../middlewares/authMiddleware.js'; 
 import multer from "multer";
 import path from "path";
@@ -41,6 +41,7 @@ router.get("/", verifyToken, getMissions);
 // Route pour récupérer les missions par userId
 router.get("/getMissionsByUserId", getMissionsByUserId);
 router.put("/updateMissionStatut", updateMissionStatut);
+router.post("/uploadRapport", upload.single("rapport"), updateMissionRapport);
 
 
 // Créer une mission (employé ou admin)

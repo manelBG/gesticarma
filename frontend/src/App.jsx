@@ -114,7 +114,7 @@ function App() {
           }
         />
         <Route
-          path="/interventions/archived"
+          path="/interventions/archiver"
           element={
             <ProtectRoute>
               <ArchivedIntervention />
@@ -130,7 +130,7 @@ function App() {
           }
         />
         <Route
-          path="interventions/externe/archived"
+          path="interventions/externe/archiver"
           element={
             <ProtectRoute>
               <ArchivedInterventionsEx />

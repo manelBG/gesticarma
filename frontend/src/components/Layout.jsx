@@ -296,8 +296,8 @@ export default function Layout() {
                   <SideItem
                     icon={FileArchive}
                     label="historique internes"
-                    path="/interventions/archived"
-                    active={isActive("/interventions/archived")}
+                    path="/interventions/archiver"
+                    active={isActive("/interventions/archiver")}
                   />
                 )}
               <SideItem
@@ -309,8 +309,8 @@ export default function Layout() {
               <SideItem
                 icon={FileArchive}
                 label="Historique Externes"
-                path="/interventions/externe/archived"
-                active={isActive("/interventions/externe/archived")}
+                path="/interventions/externe/archiver"
+                active={isActive("/interventions/externe/archiver")}
               />
               <SideItem
                 icon={Box}

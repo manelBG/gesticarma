@@ -112,6 +112,33 @@ export const deleteMission = createAsyncThunk(
   }
 );
 
+export const uploadRapport = createAsyncThunk(
+  "missions/uploadRapport",
+  async ({ missionId, rapportFile }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("missionId", missionId);
+      formData.append("rapport", rapportFile);
+
+      const response = await axios.post(
+        "http://localhost:5000/api/missions/uploadRapport",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data; // mission mise à jour
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Erreur lors de l'upload du rapport."
+      );
+    }
+  }
+);
+
 const missionSlice = createSlice({
   name: "missions",
   initialState: {
@@ -194,6 +221,25 @@ const missionSlice = createSlice({
       .addCase(deleteMission.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Une erreur s'est produite";
+      })
+
+      .addCase(uploadRapport.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadRapport.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedMission = action.payload;
+        const index = state.listMission.findIndex(
+          (m) => m._id === updatedMission._id
+        );
+        if (index !== -1) {
+          state.listMission[index] = updatedMission;
+        }
+      })
+      .addCase(uploadRapport.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
