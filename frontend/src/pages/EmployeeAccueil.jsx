@@ -136,10 +136,7 @@ export default function EmployeeAccueil() {
             value={missionCount}
             to="/missionCount"
           />
-          <div className="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center justify-center space-y-2 text-blue-900">
-            <div className="text-xl font-bold">{notifications.length}</div>
-            <div className="text-sm">Notifications</div>
-          </div>
+          
         </div>
       </div>
     </div>

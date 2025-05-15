@@ -10,9 +10,9 @@ import { verifyToken } from '../middlewares/authMiddleware.js';
 const router = express.Router();
 
 // 🔒 Routes protégées
-router.post('/', verifyToken, ajouterPrestataire);
+router.post('/', ajouterPrestataire);
 router.get("/getAllPrestataires", getAllPrestataires);
-router.put('/:id', verifyToken, updatePrestataire);
-router.delete('/:id', verifyToken, deletePrestataire);
+router.put('/:id', updatePrestataire);
+router.delete('/:id', deletePrestataire);
 
 export default router;
