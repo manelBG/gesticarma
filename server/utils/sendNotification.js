@@ -4,7 +4,7 @@ export const sendNotification = async (destinataireId, type, message) => {
   try {
     const notification = new Notification({
       destinataireId,
-      type: "mission",
+      type,
       message,
     });
     await notification.save();

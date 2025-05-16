@@ -1,8 +1,57 @@
-import { sendNotification } from "../utils/sendNotification.js";
 import User from "../models/User.js";
 import Intervention from "../models/Intervention.js";
 import Vehicule from "../models/Vehicule.js";
+import Notification from "../models/Notification.js";
+import { sendNotification } from "../index.js";
 
+// export const createIntervention = async (req, res) => {
+//   try {
+//     const {
+//       type,
+//       description,
+//       dateIntervention,
+//       cout,
+//       statut,
+//       kilometrage,
+//       duree,
+//       technicien,
+//       vehicule,
+//     } = req.body;
+
+//     const intervention = new Intervention({
+//       type,
+//       description,
+//       dateIntervention,
+//       cout,
+//       statut,
+//       kilometrage,
+//       duree,
+//       technicien,
+//       vehicule,
+//     });
+
+//     const savedIntervention = await intervention.save();
+//     await Vehicule.findByIdAndUpdate(vehicule, { statut: "En maintenance" });
+
+//     // ✅ Notification au directeur
+//     const directeur = await User.findOne({ role: "directeur" });
+//     if (directeur) {
+//       await sendNotification(
+//         directeur._id,
+//         "intervention",
+//         `Une intervention a été créée pour le véhicule ${vehicule} par le technicien ${technicien}.`
+//       );
+//     }
+
+//     res.status(201).json(savedIntervention);
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Erreur lors de la création de l'intervention", error });
+//   }
+// };
+
+// Supprimer un véhicule
 export const createIntervention = async (req, res) => {
   try {
     const {
@@ -17,6 +66,7 @@ export const createIntervention = async (req, res) => {
       vehicule,
     } = req.body;
 
+    // Création de l'intervention
     const intervention = new Intervention({
       type,
       description,
@@ -30,27 +80,45 @@ export const createIntervention = async (req, res) => {
     });
 
     const savedIntervention = await intervention.save();
+
+    // Mise à jour du statut du véhicule
     await Vehicule.findByIdAndUpdate(vehicule, { statut: "En maintenance" });
 
-    // ✅ Notification au directeur
-    const directeur = await User.findOne({ role: "directeur" });
-    if (directeur) {
-      await sendNotification(
-        directeur._id,
-        "intervention",
-        `Une intervention a été créée pour le véhicule ${vehicule} par le technicien ${technicien}.`
-      );
+    // Récupération des données complètes de l'intervention avec populate
+    const fullIntervention = await Intervention.findById(
+      savedIntervention._id
+    ).populate("technicien");
+    // Préparation du message de notification
+    const message = `Une nouvelle intervention a été créée par le technicien ${fullIntervention.technicien.nom} ${fullIntervention.technicien.prenom}.`;
+    // Récupération des admins
+    const admins = await User.find({ role: "admin" });
+
+    // Envoi des notifications aux admins
+    for (const admin of admins) {
+      const newNotification = await Notification.create({
+        destinataireId: admin._id,
+        type: "intervention",
+        sousType: "creation",
+        message,
+        dateCreation: new Date(),
+        lue: false,
+      });
+
+      // Envoi temps réel via Socket.IO
+      sendNotification(admin._id.toString(), newNotification);
     }
 
     res.status(201).json(savedIntervention);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Erreur lors de la création de l'intervention", error });
+    console.error("Erreur complète:", error); // <- Affichage complet
+    res.status(500).json({
+      message: "Erreur lors de la création de l'intervention",
+      error: error.message, // <- Affiche juste le message de l'erreur au client
+    });
   }
-};
+  
+}
 
-// Supprimer un véhicule
 export const deleteIntervention = async (req, res) => {
   const interventionId = req.query.interventionid; // Retrieve the ID from the query string
 console.log(interventionId, "interventionIdsss");
