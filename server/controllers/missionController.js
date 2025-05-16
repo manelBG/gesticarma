@@ -171,7 +171,7 @@ export const getMissionsByUserId = async (req, res) => {
     const missions = await Mission.find({ employee: userId })
       .populate({
         path: "vehicule",
-        select: "marque modele", // Affiche uniquement la marque et le modèle
+        select: "marque immatriculation", // Affiche uniquement la marque 
       })
       .populate({
         path: "employee",
